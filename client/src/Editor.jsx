@@ -13,12 +13,17 @@ function TerminalIDE() {
   const [line, setLine] = useState("")
   const [lastLineLength, setLastLineLength] = useState(0)
   const [currentPrompt, setCurrentPrompt] = useState("")
-  const [locked, setLocked] = useState(false)
+  // const [locked, setLocked] = useState(false)
 
   const clearTermLine = () => xtermRef.current.terminal.writeln('\u001b[2K\r')
   const setTermPrompt = () => xtermRef.current.terminal.writeln(currentPrompt)
   const resetTermLine = () => {
     clearTermLine()
+    setTermPrompt()
+  }
+  const clearTermScreen = () => xtermRef.current.terminal.reset()
+  const resetTermScreen = () => {
+    clearTermScreen()
     setTermPrompt()
   }
   const writeBackspaces = (length) => {
@@ -40,7 +45,6 @@ function TerminalIDE() {
     },
 
     emitInitRepl() {
-      // console.log('client -> init repl')
       socket.emit('initRepl', { language })
     },
 
@@ -51,12 +55,10 @@ function TerminalIDE() {
     },
 
     handleEnter() {
-      // console.log("Pressed ENTER")
-      if (locked) return
-      setLocked(true)
+      // if (locked) return
+      // setLocked(true)
       let lineOfCode = line
       ClientRepl.clearLine()
-      // console.log("sending: ", lineOfCode)
       ClientRepl.emitEvaluate(lineOfCode)
     },
 
@@ -69,24 +71,26 @@ function TerminalIDE() {
 
     // Handle character keys.
     handleKeypress(key) {
-      if (locked) return
+      // console.log('pressed key -> locked: ', locked)
+      // if (locked) return
       setLine(prevState => prevState += key)
       ClientRepl.emitLineChanged()
       xtermRef.current.terminal.write(key)
     },
 
     handleCtrlC() {
-      clearLine()
+      ClientRepl.clearLine()
       ClientRepl.emitEvaluate('\x03')
     },
 
     // Handle special keys (Enter, Backspace).
     // @param: KeyboardEvent
     handleKeydown({ key, ctrlKey }) {
-      // console.log("KEY: ", key)
       if (key === 'Enter') ClientRepl.handleEnter()
       else if (key === 'Backspace') ClientRepl.handleBackspace()
       else if (key === 'c' && ctrlKey) ClientRepl.handleCtrlC()
+      // Special Julia characters
+      else if (key == ';' || key == ']') ClientRepl.handleEnter()
     },
 
     //   // handleRunButtonClick() {
@@ -113,11 +117,10 @@ function TerminalIDE() {
   // #~~~~~~~~~~~~~~~~~ Socket ~~~~~~~~~~~~~~~~~#
   useEffect(() => {
     socket.on('output', ({ output }) => {
-      if (locked) {
-        setLocked(false)
+      // if (locked) {
+        // setLocked(false)
         writeBackspaces(lastLineLength)
-      }
-      console.log("output: ", output)
+      // }
       xtermRef.current.terminal.write(output)
     })
 
@@ -137,102 +140,50 @@ function TerminalIDE() {
       xtermRef.current.terminal.write(line)
     })
 
-    // socket.on('clear', () => {
-    //   state.line = ''
-    //   resetTermScreen()
-    // })
+    socket.on('clear', () => {
+      setLine('')
+      resetTermScreen()
+    })
 
   }, [])
-
-  // const cleanTerminal = (terminalContainer) => {
-  //   // 清除容器的子节点
-  //   while (terminalContainer.children.length) {
-  //     terminalContainer.removeChild(terminalContainer.children[0]);
-  //   }
-  //   term.clear();
-  // };
-
-  // const openInitTerminal = () => {
-  //   // console.log("loading terminal...");
-  //   const terminalContainer = document.getElementById('terminal');
-  //   cleanTerminal(terminalContainer);
-  //   // style
-  //   term.setOption("theme", {
-  //     background: "black",
-  //     foreground: "white"
-  //   });
-
-  //   // plugins
-  //   const fitAddon = new FitAddon();
-  //   term.loadAddon(fitAddon);
-
-  //   term.open(terminalContainer);
-
-  //   term.element.style.padding = '10px';
-  //   // fit windows
-  //   fitAddon.fit();
-  //   // focus
-  //   term.focus();
-
-  // };
-
-  // const handleOk = () => {
-  //   openInitTerminal();
-  //   term.writeln('Welcome to xterm.js');
-  //   term.writeln('This is a local terminal with a real data stream in the back-end.');
-  //   term.writeln('');
-  // };
 
   useEffect(() => {
     // You can call any method in XTerm.js by using 'xterm xtermRef.current.terminal.[What you want to call]
-    // xtermRef.current.terminal.writeln("Hello, World!")
-    // xtermRef.current.terminal.writeln(
-    //   "Please enter any string then press enter:"
-    // );
-    // xtermRef.current.terminal.write("echo> ");
-    // term.on('keypress', ClientRepl.handleKeypress.bind(ClientRepl))
-    // term.on('keydown', ClientRepl.handleKeydown.bind(ClientRepl))
-    // runButton.addEventListener('click', ClientRepl.handleRunButtonClick.bind(ClientRepl))
-    // languageSelectElem.addEventListener('change', ClientRepl.handleLanguageChange.bind(ClientRepl))
-
+    // console.log(xtermRef.current.terminal)
   }, [])
 
   useEffect(() => {
-    console.log(currentPrompt, "prompt")
-    console.log("line: ", line)
+    // console.log(currentPrompt, "prompt")
+    // console.log("line: ", line)
+    // console.log('locked: ', locked)
   })
 
-
   return (
-    <>
-      <XTerm ref={xtermRef} options={{ cursorBlink: true, fontFamily: 'monospace' }}
-        onKey={({ key, domEvent }) => {
-          // console.log("key: ", key)
-          // console.log("dom: ", domEvent)
-          ClientRepl.handleKeypress(key)
-          ClientRepl.handleKeydown({key: domEvent.code, ctrlKey: domEvent.ctrlKey})
-        }}
+    <XTerm ref={xtermRef} options={{ cursorBlink: true, fontFamily: 'monospace' }}
+      onKey={({ key, domEvent }) => {
+        // console.log("key: ", key)
+        // console.log("dom: ", domEvent)
+        ClientRepl.handleKeypress(key)
+        ClientRepl.handleKeydown({ key: domEvent.code, ctrlKey: domEvent.ctrlKey })
+      }}
       onData={(data) => {
         // console.log("data: ", data)
-      //   const code = data.charCodeAt(0);
-      //   // If the user hits empty and there is something typed echo it.
-      //   if (code === 13 && input.length > 0) {
-      //     xtermRef.current.terminal.write(
-      //       "\r\nYou typed: '" + input + "'\r\n"
-      //     );
-      //     xtermRef.current.terminal.write("echo> ");
-      //     setInput("")
-      //   } else if (code < 32 || code === 127) { // Disable control Keys such as arrow keys
-      //     return;
-      //   } else { // Add general key press characters to the terminal
-      //     xtermRef.current.terminal.write(data);
-      //     setInput(input + data)
-      //   }
+        //   const code = data.charCodeAt(0);
+        //   // If the user hits empty and there is something typed echo it.
+        //   if (code === 13 && input.length > 0) {
+        //     xtermRef.current.terminal.write(
+        //       "\r\nYou typed: '" + input + "'\r\n"
+        //     );
+        //     xtermRef.current.terminal.write("echo> ");
+        //     setInput("")
+        //   } else if (code < 32 || code === 127) { // Disable control Keys such as arrow keys
+        //     return;
+        //   } else { // Add general key press characters to the terminal
+        //     xtermRef.current.terminal.write(data);
+        //     setInput(input + data)
+        //   }
       }}
-      />
-      {/* addons={[attachAddon]} */}
-      {/* <div id="terminal" style={{ height: "100%", width: "100%", marginTop: '20px' }} /> */}
-    </>
+    />
   )
 }
 
