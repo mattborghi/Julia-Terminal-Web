@@ -5,7 +5,9 @@
 const pty = require('node-pty')
 // const COMMANDS = require('./LangCommands.js')
 const COMMANDS = {
-    julia: 'julia',
+  julia: 'julia',
+  python: 'python3',
+  bash: 'bash'
 }
 
 const Repl = {
@@ -13,12 +15,16 @@ const Repl = {
   language: null,
   process: null,
 
+
   init (language) {
     // debug(`[Repl.init(language = "${language}")]`)
     const command = COMMANDS[language]
     
     if (command) {
-      this.process = pty.spawn(command)
+      this.process = pty.spawn(command, [], {
+        cols: 80,
+        rows: 100,
+      })
       this.language = language
     //   debug(`  INITIALIZED command: ${command}`)
     //   debug('  this.process: %O, this.language: "%s"', this.process, this.language)
@@ -31,7 +37,10 @@ const Repl = {
   write (string) {
     // debug(`[Repl.write(string = ${string})]`)
     // @todo: Check if we also need a carriage return here, like in the node-pty readme.
-    this.process.write(string + '\n')
+    if (process) {
+      this.process.write(string + '\r')
+      // this.process.resize(100, 30)
+    }
   },
 
   kill () {
