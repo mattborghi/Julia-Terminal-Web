@@ -88,21 +88,19 @@ function TerminalIDE() {
 
 
     useEffect(() => {
-        console.log('Line: ', line)
+        // console.log('Line: ', line)
     }, [line])
 
     const PressedKeyUp = (e) => {
-        // console.log('pressed key: ', e.key)
-        // console.log('with code: ', e.code)
         if (e.key == 'Enter') {
             socket.emit('evaluate', { code: line })
             setLine('')
         } else if (e.key == 'Alt') {
         }
         else if (e.key == 'Backspace') {
-            term.write('\b \b')
+            // console.log('erased: ', line)
             setLine(prevState => prevState.slice(0, -1))
-            console.log('erased: ', line)
+            if (line.length > 0) term.write('\b \b')
         }
         else if ((e.key == ']' || e.key == '?') && line == '') {
             setLine('')
@@ -113,7 +111,6 @@ function TerminalIDE() {
         }
         else if (e.key == 'Tab') {
             socket.emit('tab', { code: line })
-            // setLine('')
         }
         else {
             setLine(prevState => prevState + e.key)
@@ -127,7 +124,6 @@ function TerminalIDE() {
     }
 
     return (
-        // onKeyDown={PressedKeyDown}
         <div id="terminal" onKeyUp={PressedKeyUp} onKeyDown={PressedKeyDown} style={{ position: "fixed", width: "100%", marginTop: '20px' }} />
     )
 }
