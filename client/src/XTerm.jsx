@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 const socket = require('socket.io-client')('http://localhost:3000');
 
 import { Terminal } from "xterm";
@@ -21,7 +21,8 @@ const term = new Terminal({
 
 
 function TerminalIDE() {
-    const [line, setLine] = useState('')
+    const termRef = useRef(null)
+    // const [line, setLine] = useState('')
 
     const cleanTerminal = (terminalContainer) => {
         // 清除容器的子节点
@@ -58,12 +59,20 @@ function TerminalIDE() {
 
     }
 
+    // useEffect(() => {
+    //     socket.on('clear', () => {
+    //         console.log('cleaning')
+    //         term.clear();
+    //     })
+    // }, []);
+
     useEffect(() => {
         // when get the data from backend
-        socket.on('output', ({ output }) => {
+        socket.on('output', ({ output, fromTab }) => {
             // console.log('receiving data: ', output)
             term.write(output);
-            setLine('')
+            // setLine('')
+            curr_line = fromTab ? output : ""
         });
         return () => {
             socket.disconnect();
@@ -86,45 +95,44 @@ function TerminalIDE() {
         // console.log(term)
     })
 
-
     useEffect(() => {
         // console.log('Line: ', line)
-    }, [line])
+    }, [])
 
-    const PressedKeyUp = (e) => {
-        if (e.key == 'Enter') {
-            socket.emit('evaluate', { code: line })
-            setLine('')
-        } else if (e.key == 'Alt') {
+    var curr_line = "";
+    term.onKey(function ({ key, domEvent }) {
+        // console.log('pressed: ', tEvent.key)
+        if (domEvent.key == 'Enter') {
+            socket.emit('evaluate', { code: curr_line })
+            curr_line = ""
+        } else if (domEvent.key == 'Backspace') {
+            console.log('length: ', curr_line.length)
+            if (curr_line.length > 0) {
+                //         console.log('erasing')
+                term.write('\b \b')
+                curr_line = curr_line.slice(0, -1)
+            }
+            //     setLine(prevState => prevState.slice(0, -1))
+        } else if (domEvent.key == 'ArrowUp' ||
+            domEvent.key == 'ArrowDown' ||
+            domEvent.key == 'ArrowLeft' ||
+            domEvent.key == 'ArrowRight') {
+            // TODO: Handle the up and down through history
+        } else if (domEvent.key == 'Tab') {
+            // TODO: I can autocomplete when I write the whole word
+            socket.emit('tab', { code: curr_line })
+            //} else if ((domEvent.key == ']' || domEvent.key == '?') && line == '') {
+            //     setLine('')
+            //     socket.emit('evaluate', { code: domEvent.key })
+        } else {
+            curr_line += domEvent.key;
+            term.write(domEvent.key);
         }
-        else if (e.key == 'Backspace') {
-            // console.log('erased: ', line)
-            setLine(prevState => prevState.slice(0, -1))
-            if (line.length > 0) term.write('\b \b')
-        }
-        else if ((e.key == ']' || e.key == '?') && line == '') {
-            setLine('')
-            socket.emit('evaluate', { code: e.key })
-        }
-        else if (e.key == 'ArrowUp' || e.key == 'ArrowDown' || e.key == 'ArrowLeft' || e.key == 'ArrowRight') {
-
-        }
-        else if (e.key == 'Tab') {
-            socket.emit('tab', { code: line })
-        }
-        else {
-            setLine(prevState => prevState + e.key)
-            term.write(e.key)
-        }
-    }
-
-    const PressedKeyDown = e => {
-        // special characters mainly
-        console.log('pressed down: ', e.key)
-    }
+        console.log('Line: ', curr_line)
+    });
 
     return (
-        <div id="terminal" onKeyUp={PressedKeyUp} onKeyDown={PressedKeyDown} style={{ position: "fixed", width: "100%", marginTop: '20px' }} />
+        <div id="terminal" ref={termRef} style={{ position: "fixed", width: "100%", marginTop: '20px' }} />
     )
 }
 

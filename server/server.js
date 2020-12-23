@@ -1,6 +1,6 @@
 const express = require('express')
 const http = require('http')
-const Repl = require('./repl.js')
+// const Repl = require('./repl.js')
 const pty = require('node-pty')
 const port = process.env.PORT || 3000
 const index = require('./index')
@@ -9,7 +9,6 @@ app.use(index)
 
 const server = http.createServer(app)
 const socketIo = require('socket.io')
-const { write } = require('./repl.js')
 const io = socketIo(server, {
     // transports: ["websocket"],
     cors: {
@@ -19,24 +18,24 @@ const io = socketIo(server, {
 }) // our websocket server
 
 // let histOutputs = ''
-let currOutputLength = 0
-let lastOutput = ''
-let currentPrompt = null
-let myterm = null
+// let currOutputLength = 0
+// let lastOutput = ''
+// let currentPrompt = null
+// let myterm = null
 // let sessionURL = 'localhost:' + port
 // let isConfirmDelete = false
 
-const WELCOME_MSG = 'WELCOME TO SPACECRAFT!\r\n'
-const TOO_MUCH_OUTPUT = '\r\n------TOO MUCH OUTPUT! REPL RESTARTED-------\r\n'
-const MAX_OUTPUT_LENGTH = 10000
+// const WELCOME_MSG = 'WELCOME TO SPACECRAFT!\r\n'
+// const TOO_MUCH_OUTPUT = '\r\n------TOO MUCH OUTPUT! REPL RESTARTED-------\r\n'
+// const MAX_OUTPUT_LENGTH = 10000
 const DEFAULT_LANG = 'julia'
 
-let outputHistory = ''
+// let outputHistory = ''
 
 // let interval;
 io.on('connection', (socket) => {
-    console.log("New client connected");
-
+    // console.log("New client connected");
+    var fromTab = false
     var term = pty.spawn(DEFAULT_LANG, [], {
         name: 'xterm-color',
         cols: 80,
@@ -44,11 +43,12 @@ io.on('connection', (socket) => {
         cwd: process.env.HOME,
         env: process.env
     });
-
+    
     // Listen on the terminal for output and send it to the client
     term.onData(function (data) {
-        console.log(data)
-        emitOutput(data)
+        console.log('data: ', data)
+        console.log('fromTab: ', fromTab)
+        emitOutput({ output: data, fromTab })
     });
 
     // This repeats output
@@ -57,16 +57,16 @@ io.on('connection', (socket) => {
     // })
 
 
-    const handleTooMuchOutput = () => {
-        // Repl.write('\x03')
-        term.write('\x03')
-        initRepl(Repl.language, TOO_MUCH_OUTPUT)
-    }
+    // const handleTooMuchOutput = () => {
+    //     // Repl.write('\x03')
+    //     term.write('\x03')
+    //     initRepl(Repl.language, TOO_MUCH_OUTPUT)
+    // }
 
-    const emitOutput = (output) => {
+    const emitOutput = ({ output, fromTab }) => {
         // outputHistory += output
         // if (outputHistory.length > MAX_OUTPUT_LENGTH) return handleTooMuchOutput()
-        io.emit('output', { output })
+        io.emit('output', { output, fromTab })
     }
 
     const writeShowRepl = ({ code }) => {
@@ -79,44 +79,50 @@ io.on('connection', (socket) => {
         // })
     }
 
-    const initRepl = (language, initial_msg = '') => {
-        // Repl.kill()
-        term.removeAllListeners('data')
-        term.kill()
-        // Repl.init(language)
-        // outputHistory = ''
-        // io.emit('langChange', { language: Repl.language, data: initial_msg })
-        io.emit('langChange', { language: DEFAULT_LANG, data: initial_msg })
-        // Show Julia init screen
-        writeShowRepl({ code: '' })
-    }
+    // const initRepl = (language, initial_msg = '') => {
+    //     // Repl.kill()
+    //     // TODO: Clean up the term when reconnecting
+    //     console.log('cleaning')
+    //     io.emit('clear', {})
+    //     term.removeAllListeners('data')
+    //     term.kill()
+    //     // Repl.init(language)
+    //     // outputHistory = ''
+    //     // io.emit('langChange', { language: Repl.language, data: initial_msg })
+    //     io.emit('langChange', { language: DEFAULT_LANG, data: initial_msg })
+    //     // Show Julia init screen
+    //     writeShowRepl({ code: '' })
+    //     console.log('finishesd')
+    // }
 
-    const getCurrentPrompt = () => {
-        return lastOutput.split('\n').pop()
-    }
+    // const getCurrentPrompt = () => {
+    //     return lastOutput.split('\n').pop()
+    // }
 
-    socket.on('initRepl', ({ language }) => {
-        // if (language === Repl.language) return
-        if (language === DEFAULT_LANG) return
-        initRepl(language)
-    })
+    // socket.on('initRepl', ({ language }) => {
+        // if (language === DEFAULT_LANG) return
+        // initRepl(language)
+    // })
 
-    socket.on('lineChanged', ({ line, syncSelf }) => {
-        currentPrompt = currentPrompt || getCurrentPrompt()
+    // socket.on('lineChanged', ({ line, syncSelf }) => {
+    //     currentPrompt = currentPrompt || getCurrentPrompt()
 
-        const data = { line, prompt: currentPrompt }
-        if (syncSelf) return io.emit('syncLine', data)
-        socket.broadcast.emit('syncLine', data)
-    })
+    //     const data = { line, prompt: currentPrompt }
+    //     if (syncSelf) return io.emit('syncLine', data)
+    //     socket.broadcast.emit('syncLine', data)
+    // })
 
-    socket.on('clear', () => {
-        io.emit('clear')
-        // outputHistory = ''
-    })
+    // socket.on('clear', () => {
+    //     io.emit('clear')
+    //     // outputHistory = ''
+    // })
 
     socket.on('tab', ({ code }) => {
         console.log('received: ', code)
         term.write(code + '\t')
+        fromTab = true
+        // get back term.read()?
+        // io.emit('', { output: })
     })
 
     socket.on('evaluate', ({ code }) => {
@@ -135,7 +141,6 @@ io.on('connection', (socket) => {
     })
 
     // socket.emit('output', { output: outputHistory })
-
 })
 
 server.listen(port, () => {
