@@ -21,3 +21,7 @@ on both `server` and `client` folders.
 - [Evala](https://github.com/krasimir/evala)
 
 - [Spacecraft](https://hackernoon.com/building-spacecraft-a-real-time-collaborative-repl-deebcf084ed9)
+
+## Preview video
+
+[![Video Preview](./assets/imag/terminal.png)](https://youtu.be/LVt18SACLuU)
