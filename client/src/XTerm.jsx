@@ -23,7 +23,8 @@ const term = new Terminal({
     // rendererType: "canvas" // canvas 或者 dom
 });
 
-const DISALLOWED_KEYS = ['Escape']
+// const DISALLOWED_KEYS = ['Escape']
+var searchAddon = ''
 
 function TerminalIDE() {
     const termRef = useRef(null)
@@ -31,7 +32,6 @@ function TerminalIDE() {
     // const [line, setLine] = useState('')
 
     const cleanTerminal = (terminalContainer) => {
-        // 清除容器的子节点
         while (terminalContainer.children.length) {
             terminalContainer.removeChild(terminalContainer.children[0]);
         }
@@ -41,6 +41,7 @@ function TerminalIDE() {
     const openInitTerminal = () => {
         // console.log("loading terminal...");
         const terminalContainer = document.getElementById('terminal');
+
         cleanTerminal(terminalContainer);
         // style
         term.setOption("theme", {
@@ -55,9 +56,8 @@ function TerminalIDE() {
         const linkAddon = new WebLinksAddon();
         term.loadAddon(linkAddon);
 
-        // const searchAddon = new SearchAddon();
+        // searchAddon = new SearchAddon();
         // term.loadAddon(searchAddon);
-        // searchAddon.findNext()
 
         term.open(terminalContainer);
 
@@ -79,16 +79,23 @@ function TerminalIDE() {
     useEffect(() => {
         // when get the data from backend
         socket.on('output', ({ output, fromTab }) => {
-            // console.log('receiving data: ', output)
             term.write(output);
             // setLine('')
-            curr_line = fromTab ? output : ""
+            // if (fromTab) {
+            // console.log('receiving data: ', output)
+            // console.log('index: ', output.indexOf(JULIA_HEADER))
+            // console.log("length: ", JULIA_HEADER.length)
+            // var index = output.indexOf(JULIA_HEADER) + JULIA_HEADER.length
+            // curr_line = output.substring(index)
+            // } else {
+            curr_line = ""
+            // }
         });
         return () => {
             socket.disconnect();
         }
     }, []);
-
+   
     const emitInitRepl = () => {
         socket.emit('initRepl', { language: 'julia' })
     }
@@ -97,8 +104,9 @@ function TerminalIDE() {
         // You can call any method in XTerm.js by using 'xterm xtermRef.current.terminal.[What you want to call]
         // console.log(xtermRef.current.terminal)
         openInitTerminal()
-
-        emitInitRepl()
+        // term.write('\x1b[1m\x1b[32mPress Enter to start Julia. \x1b[0m\n\r')
+        // TODO: This is non necessary
+        // emitInitRepl()
     }, [])
 
     useEffect(() => {
@@ -112,40 +120,65 @@ function TerminalIDE() {
     //     })
     // }, [])
 
-
     term.onKey(function ({ key, domEvent }) {
-        // console.log('pressed: ', tEvent.key)
+        console.log("ON KEY: ", key, domEvent)
         if (domEvent.key == 'Enter') {
-            socket.emit('evaluate', { code: curr_line })
-            curr_line = ""
-        } else if (domEvent.key == 'Backspace') {
-            console.log('length: ', curr_line.length)
-            if (curr_line.length > 0) {
-                //         console.log('erasing')
-                term.write('\b \b')
-                curr_line = curr_line.slice(0, -1)
-            }
-            //     setLine(prevState => prevState.slice(0, -1))
-        } else if (domEvent.key == 'ArrowUp' || domEvent.key == 'ArrowDown') {
-            // get the latest history element
-            // if (domEvent.key == 'ArrowUp') socket.emit('history', { previous: true })
-            // if (domEvent.key == 'ArrowDown') socket.emit('history', { previous: false })
-        } else if (domEvent.key == 'ArrowLeft' || domEvent.key == 'ArrowRight') {
-
+            socket.emit('enter', { code: "" })
         } else if (domEvent.key == 'Tab') {
-            // TODO: I can autocomplete when I write the whole word
-            socket.emit('tab', { code: curr_line })
-            //} else if ((domEvent.key == ']' || domEvent.key == '?') && line == '') {
-            //     setLine('')
-            //     socket.emit('evaluate', { code: domEvent.key })
-            // } else if (domEvent.key == 'Ctrl + c') { // TODO: Implement for killing a running process
-        } else if (DISALLOWED_KEYS.includes(domEvent.key)) { // do nothing 
+            socket.emit('tab2', { code: "" })
+        } else if (domEvent.key == 'Backspace') {
+            socket.emit('delete', { code: "" })
+        } else if (domEvent.key == 'ArrowUp') {
+            // || domEvent.key == 'ArrowDown'
+        } else if (domEvent.key == 'ArrowLeft' || domEvent.key == 'ArrowRight') {
         } else {
-            curr_line += domEvent.key;
-            term.write(domEvent.key);
+            socket.emit('test', { code: domEvent.key })
         }
-        console.log('Line: ', curr_line)
-    });
+    })
+
+    // term.onKey(function ({ key, domEvent }) {
+    //     // console.log("ON KEY: ", key, domEvent)
+    //     if (domEvent.key == 'Enter') {
+    //         socket.emit('evaluate', { code: curr_line })
+    //         curr_line = ""
+    //     } else if (domEvent.key == 'Backspace') {
+    //         if (curr_line.length > 0) {
+    //             term.write('\b \b')
+    //             curr_line = curr_line.slice(0, -1)
+    //             // TODO: It would be better to use useState but it's not working
+    //             // setLine(prevState => prevState.slice(0, -1))
+    //         }
+    //     } else if (domEvent.key == 'ArrowUp' || domEvent.key == 'ArrowDown') {
+    //         console.log("ARROWS")
+    //         // get the latest history element
+    //         // if (domEvent.key == 'ArrowUp') socket.emit('history', { previous: true })
+    //         // if (domEvent.key == 'ArrowDown') socket.emit('history', { previous: false })
+    //     } else if (domEvent.key == 'ArrowLeft' || domEvent.key == 'ArrowRight') {
+    //         console.log("ARROWS")
+    //     } else if (domEvent.key == 'Tab') {
+    //         console.log("TAB")
+    //         // TODO: I can autocomplete when I write the whole word
+    //         // term.write(curr_line + '\t')
+    //         socket.emit('tab', { code: curr_line })
+    //         // curr_line = ''
+    //         //} else if ((domEvent.key == ']' || domEvent.key == '?') && line == '') {
+    //         //     setLine('')
+    //         //     socket.emit('evaluate', { code: domEvent.key })
+    //         // } else if (domEvent.key == 'Ctrl + c') { // TODO: Implement for killing a running process
+    //     } else if (DISALLOWED_KEYS.includes(domEvent.key)) {
+    //         console.log("DISALLOWED KEY: ", domEvent.key)
+    //         // do nothing
+    //     } else if (domEvent.ctrlKey || domEvent.altKey || domEvent.shiftKey) {
+    //         console.log("COMPOSED KEY")
+    //         term.write(domEvent.key);
+    //         curr_line += domEvent.key;
+    //     } else {
+    //         // It's not a special key write it in the terminal
+    //         term.write(domEvent.key);
+    //         curr_line += domEvent.key;
+    //     }
+    //     // console.log('Line: ', curr_line)
+    // });
 
     return (
         <div id="terminal" ref={termRef} style={{ position: "fixed", width: "100%", marginTop: '20px' }} />

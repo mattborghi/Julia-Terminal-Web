@@ -1,6 +1,5 @@
 const express = require('express')
 const http = require('http')
-// const Repl = require('./repl.js')
 const pty = require('node-pty')
 const port = process.env.PORT || 3000
 const index = require('./index')
@@ -50,14 +49,17 @@ io.on('connection', (socket) => {
     term.onData(function (data) {
         console.log('data: ', data)
         // console.log('fromTab: ', fromTab)
-        emitOutput({ output: data, fromTab })
+        // if (!fromTab) {
+            emitOutput({ output: data, fromTab })
+        // } else {
+            //do nothing
+        // }
     });
 
     // This repeats output
     // term.on('data', (data) => {
     //     console.log('data: ', data)
     // })
-
 
     // const handleTooMuchOutput = () => {
     //     // Repl.write('\x03')
@@ -71,15 +73,16 @@ io.on('connection', (socket) => {
         io.emit('output', { output, fromTab })
     }
 
-    const writeShowRepl = ({ code }) => {
-        term.write(code + '\r')
-        // Repl.write(code)
-        // Repl.process.onData((data) => {
-        //     console.log('got data: ', data)
-        //     // process.stdout.write(data)
-        //     emitOutput(data)
-        // })
-    }
+    // const writeShowRepl = ({ code }) => {
+    //     console.log("evaluating")
+    //     term.write(code + '\r')
+    //     // Repl.write(code)
+    //     // Repl.process.onData((data) => {
+    //     //     console.log('got data: ', data)
+    //     //     // process.stdout.write(data)
+    //     //     emitOutput(data)
+    //     // })
+    // }
 
     // const initRepl = (language, initial_msg = '') => {
     //     // Repl.kill()
@@ -118,11 +121,35 @@ io.on('connection', (socket) => {
     //     io.emit('clear')
     //     // outputHistory = ''
     // })
+    
+    var mys = ''
+    socket.on('test', ({ code }) => {
+        mys += code
+        term.write(code)
+    })
+
+    socket.on('enter', ({ code }) => {
+        mys = ''
+        term.write('\n')
+    })
+
+    socket.on('tab2', ({ code }) => {
+        term.write('\t')
+    })
+
+    socket.on('delete', ({ code }) => {
+        if (mys.length > 0) {
+            mys = mys.slice(0, -1)
+            term.write('\b \b')
+        }
+    })
+
 
     socket.on('tab', ({ code }) => {
-        console.log('received: ', code)
-        term.write(code + '\t')
+        console.log("TAB")
+        // console.log('received: ', code)
         fromTab = true
+        term.write(code + '\t')
         // get back term.read()?
         // io.emit('', { output: })
     })
@@ -131,7 +158,10 @@ io.on('connection', (socket) => {
         // currentPrompt = null
         // lastOutput = ''
         // currOutputLength = 0
-        writeShowRepl({ code })
+        console.log("ENTER")
+        fromTab = false
+        term.write(code + '\r')
+        // writeShowRepl({ code })
         // after evaluation add element to history
         // appendHistory(code)
     })
