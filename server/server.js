@@ -17,7 +17,9 @@ const io = socketIo(server, {
     }
 }) // our websocket server
 
-// let histOutputs = ''
+const MAX_HISTORY_LENGTH = 5
+let histOutputs = []
+let CURRENT_HIST_ITEM = histOutputs.length
 // let currOutputLength = 0
 // let lastOutput = ''
 // let currentPrompt = null
@@ -37,17 +39,17 @@ io.on('connection', (socket) => {
     // console.log("New client connected");
     var fromTab = false
     var term = pty.spawn(DEFAULT_LANG, [], {
-        name: 'xterm-color',
-        cols: 80,
-        rows: 30,
-        cwd: process.env.HOME,
-        env: process.env
+        // name: 'xterm-color',
+        // cols: 80,
+        // rows: 30,
+        // cwd: process.env.HOME,
+        // env: process.env
     });
-    
+
     // Listen on the terminal for output and send it to the client
     term.onData(function (data) {
         console.log('data: ', data)
-        console.log('fromTab: ', fromTab)
+        // console.log('fromTab: ', fromTab)
         emitOutput({ output: data, fromTab })
     });
 
@@ -126,19 +128,49 @@ io.on('connection', (socket) => {
     })
 
     socket.on('evaluate', ({ code }) => {
-        currentPrompt = null
-        lastOutput = ''
-        currOutputLength = 0
+        // currentPrompt = null
+        // lastOutput = ''
+        // currOutputLength = 0
         writeShowRepl({ code })
+        // after evaluation add element to history
+        // appendHistory(code)
     })
+
+    // const appendHistory = code => {
+    //     // first check if the history is full
+    //     console.log('history: ', histOutputs, ' of length: ', histOutputs.length)
+    //     if (histOutputs.length == MAX_HISTORY_LENGTH) histOutputs.shift()
+    //     console.log('adding: ', code)
+    //     histOutputs.push(code)
+    // }
+
+    // socket.on('history', ({ previous }) => {
+        // current element: CURRENT_HIST_ITEM
+        // we can search over: histOutputs.length
+        // if we want to search previous (previous = true) 
+        // we have to decrease the index if it is > 0. Can't be less than zero.
+        // if (previous) { // previous = true
+
+        // } else { // previous = false
+
+        // }
+        // we have to return historyOutput[CURRENT_HIST_ITEM]
+        // term.write('holaaa')
+        // io.emit('history', { output: 'hollaa' })
+        // term.write(histOutputs[CURRENT_HIST_ITEM])
+    // })
 
     socket.on('disconnect', () => {
         console.log('disconnected from server')
         // Repl.kill()
         term.removeAllListeners('data')
         term.kill()
-
+        cleanVariables()
     })
+
+    const cleanVariables = () => {
+        histOutputs = []
+    }
 
     // socket.emit('output', { output: outputHistory })
 })

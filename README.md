@@ -1,4 +1,4 @@
-# WIP: Julia + Node.js + Xterm.js + React.js
+# Julia + Node.js + Xterm.js + React.js
 
 Implementation of Julia console on the web.
 
@@ -14,9 +14,13 @@ npm run start
 
 on both `server` and `client` folders.
 
-There is also a simple script called `RUN.sh` where you can run both servers with one command.
+There is also a simple script called `RUN.dev.sh` where you can run both servers with one command.
 
 > For watching changes in the `server` you can instead run `npm run watch` to run a `nodemon` instance.
+
+## Preview video
+
+[![Video Preview](./assets/imag/terminal.png)](https://youtu.be/LVt18SACLuU)
 
 ## Resources
 
@@ -25,7 +29,3 @@ There is also a simple script called `RUN.sh` where you can run both servers wit
 - [Evala](https://github.com/krasimir/evala)
 
 - [Spacecraft](https://hackernoon.com/building-spacecraft-a-real-time-collaborative-repl-deebcf084ed9)
-
-## Preview video
-
-[![Video Preview](./assets/imag/terminal.png)](https://youtu.be/LVt18SACLuU)

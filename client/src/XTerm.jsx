@@ -4,6 +4,7 @@ const socket = require('socket.io-client')('http://localhost:3000');
 import { Terminal } from "xterm";
 import { FitAddon } from 'xterm-addon-fit';
 import { WebLinksAddon } from 'xterm-addon-web-links';
+// import { SearchAddon } from 'xterm-addon-search';
 
 import './xterm.css'
 import './main.css'
@@ -19,9 +20,11 @@ const term = new Terminal({
     // rendererType: "canvas" // canvas 或者 dom
 });
 
+const DISALLOWED_KEYS = ['Escape']
 
 function TerminalIDE() {
     const termRef = useRef(null)
+    var curr_line = "";
     // const [line, setLine] = useState('')
 
     const cleanTerminal = (terminalContainer) => {
@@ -48,6 +51,10 @@ function TerminalIDE() {
 
         const linkAddon = new WebLinksAddon();
         term.loadAddon(linkAddon);
+
+        // const searchAddon = new SearchAddon();
+        // term.loadAddon(searchAddon);
+        // searchAddon.findNext()
 
         term.open(terminalContainer);
 
@@ -95,11 +102,14 @@ function TerminalIDE() {
         // console.log(term)
     })
 
-    useEffect(() => {
-        // console.log('Line: ', line)
-    }, [])
+    // useEffect(() => {
+    //     // TODO: Maybe we can restrict moving if curr_line is not empty
+    //     socket.on('history', ({ output }) => {
+    //         curr_line = output
+    //     })
+    // }, [])
 
-    var curr_line = "";
+
     term.onKey(function ({ key, domEvent }) {
         // console.log('pressed: ', tEvent.key)
         if (domEvent.key == 'Enter') {
@@ -113,17 +123,20 @@ function TerminalIDE() {
                 curr_line = curr_line.slice(0, -1)
             }
             //     setLine(prevState => prevState.slice(0, -1))
-        } else if (domEvent.key == 'ArrowUp' ||
-            domEvent.key == 'ArrowDown' ||
-            domEvent.key == 'ArrowLeft' ||
-            domEvent.key == 'ArrowRight') {
-            // TODO: Handle the up and down through history
+        } else if (domEvent.key == 'ArrowUp' || domEvent.key == 'ArrowDown') {
+            // get the latest history element
+            // if (domEvent.key == 'ArrowUp') socket.emit('history', { previous: true })
+            // if (domEvent.key == 'ArrowDown') socket.emit('history', { previous: false })
+        } else if (domEvent.key == 'ArrowLeft' || domEvent.key == 'ArrowRight') {
+
         } else if (domEvent.key == 'Tab') {
             // TODO: I can autocomplete when I write the whole word
             socket.emit('tab', { code: curr_line })
             //} else if ((domEvent.key == ']' || domEvent.key == '?') && line == '') {
             //     setLine('')
             //     socket.emit('evaluate', { code: domEvent.key })
+            // } else if (domEvent.key == 'Ctrl + c') { // TODO: Implement for killing a running process
+        } else if (DISALLOWED_KEYS.includes(domEvent.key)) { // do nothing 
         } else {
             curr_line += domEvent.key;
             term.write(domEvent.key);
