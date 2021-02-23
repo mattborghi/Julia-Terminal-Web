@@ -1,6 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
+const Dotenv = require('dotenv-webpack');
 
 module.exports = {
     entry: path.resolve(__dirname, './src/index.jsx'),
@@ -41,6 +42,10 @@ module.exports = {
             // favicon: "./src/favicon.ico"
         }),
         new webpack.HotModuleReplacementPlugin(),
+        new Dotenv({
+            path: '../.env', // Path to .env file (this is the default)
+            safe: false, // load .env.example (defaults to "false" which does not use dotenv-safe)
+        }),
     ],
     devServer: {
         // contentBase: path.resolve(__dirname, './build'),
