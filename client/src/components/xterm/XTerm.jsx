@@ -10,12 +10,22 @@ import { WebLinksAddon } from 'xterm-addon-web-links';
 
 import './xterm.css';
 
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles((theme) => ({
+    terminal: {
+        visibility: terminalConsoleVisibility => terminalConsoleVisibility ? "visible" : "hidden",
+    },
+}))
+
 const term = new Terminal({});
 
-function TerminalIDE() {
+function TerminalIDE({ terminalConsoleVisibility }) {
+    const classes = useStyles(terminalConsoleVisibility);
     const termRef = useRef(null);
 
     const openInitTerminal = () => {
+
         const terminalContainer = document.getElementById('terminal');
 
         // style
@@ -42,6 +52,13 @@ function TerminalIDE() {
     }
 
     useEffect(() => {
+        // You can call any method in XTerm.js by using 'xterm xtermRef.current.terminal.[What you want to call]
+        // console.log(xtermRef.current.terminal)
+        openInitTerminal()
+        // term.write('\x1b[1m\x1b[32mPress Enter to start Julia. \x1b[0m\n\r')
+    }, [])
+
+    useEffect(() => {
         // when get the data from backend
         socket.on('output', ({ output }) => {
             term.write(output);
@@ -52,17 +69,11 @@ function TerminalIDE() {
     }, []);
 
     useEffect(() => {
-        // You can call any method in XTerm.js by using 'xterm xtermRef.current.terminal.[What you want to call]
-        // console.log(xtermRef.current.terminal)
-        openInitTerminal()
-        // term.write('\x1b[1m\x1b[32mPress Enter to start Julia. \x1b[0m\n\r')
+        term.onKey(function ({ key, domEvent }) {
+            socket.emit('write', { code: key })
+        })
     }, [])
-
-    term.onKey(function ({ key, domEvent }) {
-        socket.emit('write', { code: key })
-    })
-
-    return <div id="terminal" ref={termRef} />
+    return <div id="terminal" className={classes.terminal} ref={termRef} />
 }
 
 export default TerminalIDE;
