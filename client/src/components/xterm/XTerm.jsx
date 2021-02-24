@@ -28,12 +28,6 @@ function TerminalIDE({ terminalConsoleVisibility }) {
 
         const terminalContainer = document.getElementById('terminal');
 
-        // style
-        term.setOption("theme", {
-            background: "black",
-            foreground: "white"
-        });
-
         // plugins
         const fitAddon = new FitAddon();
         term.loadAddon(fitAddon);
