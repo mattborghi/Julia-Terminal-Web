@@ -8,8 +8,7 @@ import { Terminal } from "xterm";
 import { FitAddon } from 'xterm-addon-fit';
 import { WebLinksAddon } from 'xterm-addon-web-links';
 
-import './xterm.css'
-import './main.css'
+import './xterm.css';
 
 const term = new Terminal({
     // convertEol: true,
@@ -70,11 +69,7 @@ function TerminalIDE() {
         socket.emit('write', { code: key })
     })
 
-    return (
-        <div style={{ width: '100vh', height: '100vh', padding: 0 }}>
-            <div id="terminal" ref={termRef} />
-        </div>
-    )
+    return <div id="terminal" ref={termRef} />
 }
 
 export default TerminalIDE;
