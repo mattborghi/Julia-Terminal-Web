@@ -34,12 +34,20 @@ module.exports = {
                     },
                 ],
             },
+            {
+                test: /\.(png|jpe?g|gif|ico)$/i,
+                use: [
+                    {
+                        loader: 'file-loader',
+                    },
+                ],
+            },
         ],
     },
     plugins: [
         new HtmlWebPackPlugin({
-            template: './src/index.html',
-            // favicon: "./src/favicon.ico"
+            template: "./src/index.html",
+            favicon: "./src/favicon.ico",
         }),
         new webpack.HotModuleReplacementPlugin(),
         new Dotenv({
@@ -54,6 +62,7 @@ module.exports = {
         headers: {
             "Access-Control-Allow-Origin": "*",
             // https: true
-        }
+        },
+        historyApiFallback: true,
     },
 };
