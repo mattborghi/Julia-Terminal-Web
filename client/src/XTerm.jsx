@@ -10,14 +10,7 @@ import { WebLinksAddon } from 'xterm-addon-web-links';
 
 import './xterm.css';
 
-const term = new Terminal({
-    // convertEol: true,
-    cols: 80,
-    rows: 100,
-    fontFamily: `'Fira Mono', monospace`,
-    fontSize: 14,
-    fontWeight: 400,
-});
+const term = new Terminal({});
 
 function TerminalIDE() {
     const termRef = useRef(null);
