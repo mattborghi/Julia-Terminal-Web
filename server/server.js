@@ -19,7 +19,7 @@ const io = socketIo(server, {
 // let interval;
 io.on('connection', (socket) => {
 
-    var term = pty.spawn('julia', [], {
+    var term = pty.spawn(`julia`, [`--project=env`], {
     });
 
     // Listen on the terminal for output and send it to the client
