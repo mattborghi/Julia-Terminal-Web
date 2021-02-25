@@ -15,7 +15,6 @@ import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles((theme) => ({
     terminal: {
         visibility: terminalConsoleVisibility => terminalConsoleVisibility ? "visible" : "hidden",
-        overflow: "hidden",
     },
 }))
 
@@ -62,13 +61,17 @@ function TerminalIDE({ terminalHeight, terminalConsoleVisibility }) {
     }, [])
 
     useEffect(() => {
+        socket.on('disconnect', () => {
+            console.log('disconnected terminal connection');
+            term.clear();
+        })
+    }, [])
+
+    useEffect(() => {
         // when get the data from backend
         socket.on('output', ({ output }) => {
             term.write(output);
-        });
-        return () => {
-            socket.disconnect();
-        }
+        })
     }, []);
 
     useEffect(() => {
