@@ -18,8 +18,10 @@ const io = socketIo(server, {
 
 // let interval;
 io.on('connection', (socket) => {
-
-    var term = pty.spawn(`julia`, [`--project=env`], {
+    // The startup file is read from a custom file located in env/startup.jl
+    // There we have for example our custom configuration with OhMyRepl (we dont have Revise)
+    // The interactive mode is necessary to leave the console open
+    var term = pty.spawn(`julia`, [`-i`, `--startup-file=no`, `--project=env`, `env/startup.jl`], {
     });
 
     // Listen on the terminal for output and send it to the client
