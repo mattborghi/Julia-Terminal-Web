@@ -35,13 +35,11 @@ io.on('connection', (socket) => {
         term.write(code)
     })
 
-
     socket.on('disconnect', () => {
         console.log('disconnected from server')
-        term.removeAllListeners('write')
-        term.kill()
+        // term.removeAllListeners('write')
+        // term.kill()
     })
-
 })
 
 server.listen(port, () => {
