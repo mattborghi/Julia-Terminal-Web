@@ -1,4 +1,4 @@
-# Julia + Node.js + Xterm.js + React.js
+# Julia Terminal on the web
 
 Implementation of Julia console on the web.
 
