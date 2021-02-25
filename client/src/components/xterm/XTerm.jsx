@@ -82,9 +82,30 @@ function TerminalIDE({ terminalHeight, terminalConsoleVisibility }) {
 
     useEffect(() => {
         term.onKey(function ({ key, domEvent }) {
-            socket.emit('write', { code: key })
+                socket.emit('write', { code: key })
         })
     }, [])
+
+    // const iscopy = e => { return e.key === 'c' && e.ctrlKey === true && e.shiftKey === false && e.altKey === false }
+    const ispaste = e => { return e.key === 'v' && e.ctrlKey === true && e.shiftKey === false && e.altKey === false }
+
+    const handleKeybinding = e => {
+        if (ispaste(e) && e.type == 'keyup') {
+            navigator.clipboard.readText().then(
+                clipText => socket.emit('write', { code: clipText }))
+            return false
+        }
+        // else if (iscopy(e) && e.type == 'keyup') {
+        //     console.log("handle copy")
+        //     return false
+        // }
+        return e
+    }
+
+    useEffect(() => {
+        term.attachCustomKeyEventHandler((e) => handleKeybinding(e))
+    }, [])
+
     return <div id="terminal" className={classes.terminal} ref={termRef} />
 }
 
