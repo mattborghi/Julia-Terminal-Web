@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
         justifyContent: 'space-between',
         backgroundColor: "rgb(36, 43, 56)",
         height: footerHeight => footerHeight,
-        borderTop: "1px solid grey",
+        borderTop: "3px solid grey",
     },
     icon: {
         color: 'white',
@@ -31,8 +31,6 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'baseline',
-        // justifyContent: 'space-between'
-        // minWidth: '180px',
     },
     und: {
         color: 'white',

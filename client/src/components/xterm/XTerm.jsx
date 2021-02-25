@@ -16,8 +16,6 @@ const useStyles = makeStyles((theme) => ({
     terminal: {
         visibility: terminalConsoleVisibility => terminalConsoleVisibility ? "visible" : "hidden",
         overflow: "hidden",
-        // Doesnt work but works in useEffect using ref
-        // height: footerHeight => `calc(100vh - ${footerHeight}px)`,
     },
 }))
 
@@ -50,7 +48,9 @@ function TerminalIDE({ terminalHeight, terminalConsoleVisibility }) {
 
     // When height changes fit again the terminal
     useEffect(() => {
-        if (termRef.current.style) termRef.current.style.height = `${terminalHeight}%`;
+        if (termRef.current.style) {
+            termRef.current.style.height = "99.99%"
+        }
         fitAddon.fit();
     }, [terminalHeight])
 

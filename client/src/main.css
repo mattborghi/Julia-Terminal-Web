@@ -3,3 +3,26 @@
     overflow: hidden;
     margin: 0;
   }
+
+/* split.css */
+.split-vertical {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.gutter {
+  flex-shrink: 0;
+  flex-grow: 0;
+  background: transparent;
+}
+
+.gutter-vertical {
+  cursor: row-resize;
+}
+.gutter:hover {
+  background: grey;
+}
+.gutter-dragging:hover {
+  background: grey;
+}

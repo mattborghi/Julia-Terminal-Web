@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 import { makeStyles } from '@material-ui/core/styles';
-import Split from 'react-split'
+import Split from 'react-split-it';
 
 import Terminal from './xterm/XTerm.jsx';
 import Footer from "./Footer.jsx"
@@ -35,18 +35,12 @@ export default function Main() {
     return (
         <div className={classes.main}>
             <Split
-                className={classes.split}
-                sizes={[25, termInitialSize]}
-                // minSize={100}
-                // expandToMin={false}
-                gutterSize={20}
-                gutterAlign="center"
-                // snapOffset={30}
-                // dragInterval={1}
+                className="split-vertical"
                 direction="vertical"
-                cursor="row-resize"
-                onDrag={(sizes) => {
-                    setTerminalHeight(sizes[1])
+                gutterSize={3}
+                sizes={[1.0 - (terminalHeight / 100), terminalHeight / 100]}
+                onSetSizes={(sizes) => {
+                    setTerminalHeight(sizes[1] * 100)
                 }}
             >
                 <div style={{ 'backgroundColor': 'blue', 'visibility': 'hidden', 'height': '100%' }}></div>
