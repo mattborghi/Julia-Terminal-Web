@@ -18,7 +18,13 @@ const useStyles = makeStyles((theme) => ({
     },
 }))
 
-const term = new Terminal({});
+const term = new Terminal({
+    allowTransparency: true,
+    theme: {
+        background: "rgba(0, 0, 0, 0.3)",
+        // background: "rgba(36, 43, 56, 0.3)"
+    },
+});
 const fitAddon = new FitAddon();
 const linkAddon = new WebLinksAddon();
 
