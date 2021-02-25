@@ -69,6 +69,8 @@
   /* Scrollbar */
   overflow-y: scroll;
 }
+
+/* Scrollbar Settings */
 .xterm-viewport::-webkit-scrollbar {
   background-color: black;
   width: 20px;
@@ -76,13 +78,13 @@
 
 /* Draggable scrolling element */
 .xterm-viewport::-webkit-scrollbar-thumb {
-  background: rgba(80,80,80,0.3);
+  background: rgba(80,80,80,0.7);
   border-radius: 3px;
   outline: 1px solid grey;
 }
 
 .xterm-viewport::-webkit-scrollbar-thumb:hover {
-  background: rgba(80,80,80,0.8);
+  background: rgba(80,80,80,0.9);
 }
 
 /* Empty space below the progress bar */

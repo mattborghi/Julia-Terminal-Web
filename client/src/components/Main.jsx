@@ -11,12 +11,8 @@ const useStyles = makeStyles((theme) => ({
         height: "100vh",
         display: "flex",
         flexDirection: "column",
-        alignItems: "space-between",
         justifyContent: "space-between",
         backgroundColor: "rgb(36, 43, 56)",
-    },
-    split: {
-        height: footerHeight => `calc(100% - ${footerHeight}px)`,
     },
 }))
 
@@ -24,7 +20,7 @@ export default function Main() {
     // Opened terminals
     // const [terminal, setTerminal] = useState()
     const footerHeight = 40;
-    const termInitialSize = 75;
+    const termInitialSize = 35;
 
     const classes = useStyles(footerHeight);
     const [terminalHeight, setTerminalHeight] = useState(termInitialSize) // in %
@@ -44,6 +40,7 @@ export default function Main() {
                 }}
             >
                 <div style={{ 'backgroundColor': 'blue', 'visibility': 'hidden', 'height': '100%' }}></div>
+                {/* <div style={{ 'backgroundColor': 'blue', 'visibility': 'visible', 'height': '100%' }}></div> */}
                 <Terminal
                     terminalHeight={terminalHeight}
                     terminalConsoleVisibility={terminalConsoleVisibility}
