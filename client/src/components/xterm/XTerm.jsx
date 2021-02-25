@@ -15,12 +15,17 @@ import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles((theme) => ({
     terminal: {
         visibility: terminalConsoleVisibility => terminalConsoleVisibility ? "visible" : "hidden",
+        overflow: "hidden",
+        // Doesnt work but works in useEffect using ref
+        // height: footerHeight => `calc(100vh - ${footerHeight}px)`,
     },
 }))
 
 const term = new Terminal({});
+const fitAddon = new FitAddon();
+const linkAddon = new WebLinksAddon();
 
-function TerminalIDE({ terminalConsoleVisibility }) {
+function TerminalIDE({ terminalHeight, terminalConsoleVisibility }) {
     const classes = useStyles(terminalConsoleVisibility);
     const termRef = useRef(null);
 
@@ -29,10 +34,8 @@ function TerminalIDE({ terminalConsoleVisibility }) {
         const terminalContainer = document.getElementById('terminal');
 
         // plugins
-        const fitAddon = new FitAddon();
         term.loadAddon(fitAddon);
 
-        const linkAddon = new WebLinksAddon();
         term.loadAddon(linkAddon);
 
         term.open(terminalContainer);
@@ -44,6 +47,12 @@ function TerminalIDE({ terminalConsoleVisibility }) {
         term.focus();
 
     }
+
+    // When height changes fit again the terminal
+    useEffect(() => {
+        if (termRef.current.style) termRef.current.style.height = `${terminalHeight}%`;
+        fitAddon.fit();
+    }, [terminalHeight])
 
     useEffect(() => {
         // You can call any method in XTerm.js by using 'xterm xtermRef.current.terminal.[What you want to call]

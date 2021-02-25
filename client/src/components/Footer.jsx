@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
         alignItems: 'center',
         justifyContent: 'space-between',
         backgroundColor: "rgb(36, 43, 56)",
-        height: '40px',
+        height: footerHeight => footerHeight,
         borderTop: "1px solid grey",
     },
     icon: {
@@ -23,6 +23,9 @@ const useStyles = makeStyles((theme) => ({
     },
     text: {
         color: 'white',
+        minWidth: '120px',
+        maxWidth: '120px',
+        textAlign: 'right',
     },
     console: {
         display: 'flex',
@@ -49,8 +52,8 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 
-export default function Footer({ terminalConsoleVisibility, setTerminalConsoleVisibility }) {
-    const classes = useStyles();
+export default function Footer({ footerHeight, terminalConsoleVisibility, setTerminalConsoleVisibility }) {
+    const classes = useStyles(footerHeight);
     return (
         <div className={classes.footer}>
             {/* Console name */}
@@ -62,12 +65,12 @@ export default function Footer({ terminalConsoleVisibility, setTerminalConsoleVi
                 <Typography className={classes.name}>{terminalConsoleVisibility ? "Console 1" : "-"}</Typography>
             </div>
             {/* Create new console */}
-            <IconButton size="small" className={classes.circle}>
+            <IconButton size="small" className={classes.circle} >
                 <AddIcon className={classes.icon} />
             </IconButton>
             {/* Console visibility button */}
             <IconButton onClick={() => setTerminalConsoleVisibility(prevState => !prevState)}>
-                <Typography className={classes.text}>Open Terminal</Typography>
+                <Typography className={classes.text}>{terminalConsoleVisibility ? "Hide Terminals" : "Show Terminals"}</Typography>
                 {terminalConsoleVisibility ? <ExpandMoreIcon className={classes.icon} /> : <ExpandLessIcon className={classes.icon} />}
             </IconButton>
         </div>
