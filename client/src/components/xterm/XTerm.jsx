@@ -61,7 +61,7 @@ function TerminalIDE({ footerHeight, terminalHeight, terminalConsoleVisibility }
             if (terminalConsoleVisibility) {
                 termRef.current.style.height = `calc(99% - ${footerHeight}px)`
             } else {
-                termRef.current.style.height = "0%"
+                termRef.current.style.height = 0
             }
         }
         fitAddon.fit();

@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Split from 'react-split-it';
 
 import Terminal from './xterm/XTerm.jsx';
-import Footer from "./Footer.jsx"
+import Footer from "./Footer/Footer.jsx"
 
 
 const useStyles = makeStyles((theme) => ({
