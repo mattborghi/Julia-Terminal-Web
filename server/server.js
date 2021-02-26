@@ -1,10 +1,16 @@
 const express = require('express')
 const http = require('http')
 const pty = require('node-pty')
-const port = process.env.PORT || 3000
 const index = require('./index')
 const app = express()
 app.use(index)
+
+const ENV_PATH = '../.env'
+
+const dotenv = require('dotenv').config({ path: __dirname + '/' + ENV_PATH })
+
+const port = typeof dotenv === undefined ? dotenv.parsed.SERVER_PORT : process.env.SERVER_PORT || 3000
+const host = typeof dotenv === undefined ? dotenv.parsed.SERVER_HOST : process.env.SERVER_HOST || "0.0.0.0"
 
 const server = http.createServer(app)
 const socketIo = require('socket.io')
@@ -44,6 +50,6 @@ io.on('connection', (socket) => {
     })
 })
 
-server.listen(port, () => {
-    console.log(`Listening on port: ${port}...`)
+server.listen(port, host, () => {
+    console.log(`Listening on -> http://${host}:${port}`)
 })
