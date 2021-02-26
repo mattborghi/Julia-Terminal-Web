@@ -20,6 +20,8 @@ There is also a simple script called `RUN.dev.sh` where you can run both servers
 
 ## Docker 
 
+In the root folder
+
 ### Client
 
 ```sh
@@ -32,6 +34,12 @@ docker run -it -p 8080:8080 client
 ```sh
 docker build -t server server/
 docker run -it -p 3000:3000 server
+```
+
+### Compose
+
+```sh
+docker-compose up
 ```
 
 ## Preview video
