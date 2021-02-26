@@ -77,9 +77,9 @@ function TerminalIDE({ footerHeight, terminalHeight, terminalConsoleVisibility }
     }, [terminalConsoleVisibility])
 
     useEffect(() => {
-        // You can call any method in XTerm.js by using 'xterm xtermRef.current.terminal.[What you want to call]
-        // console.log(xtermRef.current.terminal)
-        openInitTerminal()
+        // check if element is visible, because `terminal.open(this)` will fail otherwise
+        // https://github.com/JunoLab/atom-ink/blob/87378d40a74cd83790d47971548b8d161095d805/lib/console/view.js#L13
+        if (!terminalConsoleVisibility) openInitTerminal()
         // term.write('\x1b[1m\x1b[32mPress Enter to start Julia. \x1b[0m\n\r')
     }, [])
 
