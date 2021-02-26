@@ -11,8 +11,6 @@ ENV PATH /client/node_modules/.bin:$PATH
 COPY package.json ./
 COPY package-lock.json ./
 RUN npm install
-# there is an issue so we need to do this
-RUN npm rebuild node-sass
 
 # add app
 COPY . ./
