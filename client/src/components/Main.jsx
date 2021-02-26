@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react"
+import React, { useState } from "react"
 import { makeStyles } from '@material-ui/core/styles';
 import Split from 'react-split-it';
 
@@ -8,7 +8,9 @@ import Footer from "./Footer.jsx"
 
 const useStyles = makeStyles((theme) => ({
     main: {
-        height: "100vh",
+        //Fixes minimal overflow on the terminal bottom
+        height: "103vh",
+        overflow: "hidden",
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
@@ -17,7 +19,6 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 export default function Main() {
-    const mainRef = useRef(null)
     // Opened terminals
     // const [terminal, setTerminal] = useState()
     const footerHeight = 40;

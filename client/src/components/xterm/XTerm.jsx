@@ -59,13 +59,22 @@ function TerminalIDE({ footerHeight, terminalHeight, terminalConsoleVisibility }
     useEffect(() => {
         if (termRef.current.style) {
             if (terminalConsoleVisibility) {
-                termRef.current.style.height = `calc(99.99% - ${footerHeight}px)`
+                termRef.current.style.height = `calc(99% - ${footerHeight}px)`
             } else {
                 termRef.current.style.height = "0%"
             }
         }
         fitAddon.fit();
     }, [terminalHeight])
+    // Fixes bug when clicking on show/hide pane
+    useEffect(() => {
+        if (termRef.current.style) {
+            if (terminalConsoleVisibility) {
+                termRef.current.style.height = `calc(99% - ${footerHeight}px)`
+            }
+        }
+        fitAddon.fit();
+    }, [terminalConsoleVisibility])
 
     useEffect(() => {
         // You can call any method in XTerm.js by using 'xterm xtermRef.current.terminal.[What you want to call]
