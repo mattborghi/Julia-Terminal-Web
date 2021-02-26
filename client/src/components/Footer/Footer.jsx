@@ -8,7 +8,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import AddIcon from '@material-ui/icons/Add';
 
 // Custom components
-import Tabs from "./Tabs.jsx"
+import TabsMenu from "./Tabs.jsx"
 
 const useStyles = makeStyles((theme) => ({
     footer: {
@@ -33,6 +33,8 @@ const useStyles = makeStyles((theme) => ({
     },
     circle: {
         color: 'white',
+        position: "absolute",
+        left: "50%",
     },
 }))
 
@@ -42,7 +44,7 @@ export default function Footer({ footerHeight, terminalConsoleVisibility, setTer
     return (
         <div className={classes.footer}>
             {/* Console name */}
-            <Tabs terminalConsoleVisibility={terminalConsoleVisibility} />
+            <TabsMenu terminalConsoleVisibility={terminalConsoleVisibility} />
             {/* Create new console */}
             <IconButton size="small" className={classes.circle} >
                 <AddIcon className={classes.icon} />
