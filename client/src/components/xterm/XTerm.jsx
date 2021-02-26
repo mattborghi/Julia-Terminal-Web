@@ -1,7 +1,11 @@
 import React, { useEffect, useRef } from 'react';
 
-let URL = 'http://' + process.env.HOST + ':' + process.env.PORT;
-console.log('Connecting to ' + URL)
+const server_host = process.env.SERVER_HOST || "127.0.0.1"
+const server_port = process.env.SERVER_PORT || 3000
+
+let URL = 'http://' + server_host + ':' + server_port;
+console.log('Connecting to terminal at: ' + URL)
+
 const socket = require('socket.io-client')(URL);
 
 import { Terminal } from "xterm";
