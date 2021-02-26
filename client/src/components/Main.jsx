@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { makeStyles } from '@material-ui/core/styles';
 import Split from 'react-split-it';
 
@@ -29,6 +29,15 @@ export default function Main() {
 
     // Control visibility 
     const [terminalConsoleVisibility, setTerminalConsoleVisibility] = useState(false)
+
+    // Better show/hide terminal height
+    useEffect(() => {
+        if (terminalConsoleVisibility) {
+            setTerminalHeight(45)
+        } else {
+            setTerminalHeight(termInitialSize)
+        }
+    }, [terminalConsoleVisibility])
 
     return (
         <div className={classes.main}>
