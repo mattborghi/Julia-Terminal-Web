@@ -18,6 +18,22 @@ There is also a simple script called `RUN.dev.sh` where you can run both servers
 
 > For watching changes in the `server` you can instead run `npm run watch` to run a `nodemon` instance.
 
+## Docker 
+
+### Client
+
+```sh
+docker build -t client client/
+docker run -it -p 8080:8080 client
+```
+
+### Server
+
+```sh
+docker build -t server server/
+docker run -it -p 3000:3000 server
+```
+
 ## Preview video
 
 [![Video Preview](./assets/imag/terminal.png)](https://youtu.be/LVt18SACLuU)
