@@ -32,7 +32,7 @@ const term = new Terminal({
 const fitAddon = new FitAddon();
 const linkAddon = new WebLinksAddon();
 
-function TerminalIDE({ terminalHeight, terminalConsoleVisibility }) {
+function TerminalIDE({ footerHeight, terminalHeight, terminalConsoleVisibility }) {
     const classes = useStyles(terminalConsoleVisibility);
     const termRef = useRef(null);
 
@@ -58,7 +58,11 @@ function TerminalIDE({ terminalHeight, terminalConsoleVisibility }) {
     // When height changes fit again the terminal
     useEffect(() => {
         if (termRef.current.style) {
-            termRef.current.style.height = "99.99%"
+            if (terminalConsoleVisibility) {
+                termRef.current.style.height = `calc(99.99% - ${footerHeight}px)`
+            } else {
+                termRef.current.style.height = "0%"
+            }
         }
         fitAddon.fit();
     }, [terminalHeight])

@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useRef } from "react"
 import { makeStyles } from '@material-ui/core/styles';
 import Split from 'react-split-it';
 
@@ -17,12 +17,13 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 export default function Main() {
+    const mainRef = useRef(null)
     // Opened terminals
     // const [terminal, setTerminal] = useState()
     const footerHeight = 40;
-    const termInitialSize = 35;
+    const termInitialSize = 10;
 
-    const classes = useStyles(footerHeight);
+    const classes = useStyles();
     const [terminalHeight, setTerminalHeight] = useState(termInitialSize) // in %
 
     // Control visibility 
@@ -34,23 +35,26 @@ export default function Main() {
                 className="split-vertical"
                 direction="vertical"
                 gutterSize={3}
+                minSize={footerHeight}
                 sizes={[1.0 - (terminalHeight / 100), terminalHeight / 100]}
                 onSetSizes={(sizes) => {
                     setTerminalHeight(sizes[1] * 100)
                 }}
             >
                 <div style={{ 'backgroundColor': 'blue', 'visibility': 'hidden', 'height': '100%' }}></div>
-                {/* <div style={{ 'backgroundColor': 'blue', 'visibility': 'visible', 'height': '100%' }}></div> */}
-                <Terminal
-                    terminalHeight={terminalHeight}
-                    terminalConsoleVisibility={terminalConsoleVisibility}
-                />
+                <div style={{ 'height': '100%' }}>
+                    <Footer
+                        footerHeight={footerHeight}
+                        terminalConsoleVisibility={terminalConsoleVisibility}
+                        setTerminalConsoleVisibility={setTerminalConsoleVisibility}
+                    />
+                    <Terminal
+                        footerHeight={footerHeight}
+                        terminalHeight={terminalHeight}
+                        terminalConsoleVisibility={terminalConsoleVisibility}
+                    />
+                </div>
             </Split>
-            <Footer
-                footerHeight={footerHeight}
-                terminalConsoleVisibility={terminalConsoleVisibility}
-                setTerminalConsoleVisibility={setTerminalConsoleVisibility}
-            />
         </div>
     )
 }

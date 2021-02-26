@@ -16,7 +16,8 @@ const useStyles = makeStyles((theme) => ({
         justifyContent: 'space-between',
         backgroundColor: "rgb(36, 43, 56)",
         height: footerHeight => footerHeight,
-        borderTop: "3px solid grey",
+        // Uncommenting this produces an interesting bug
+        // borderTop: "3px solid grey",
     },
     icon: {
         color: 'white',
