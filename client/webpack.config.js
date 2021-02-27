@@ -3,6 +3,11 @@ const webpack = require('webpack');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
 const Dotenv = require('dotenv-webpack');
 
+const ENV_PATH = '../.env'
+
+var dotenv = require('dotenv').config({ path: __dirname + '/' + ENV_PATH });
+
+
 module.exports = {
     entry: path.resolve(__dirname, './src/index.jsx'),
     output: {
@@ -51,13 +56,15 @@ module.exports = {
         }),
         new webpack.HotModuleReplacementPlugin(),
         new Dotenv({
-            path: '../.env', // Path to .env file (this is the default)
+            path: ENV_PATH, // Path to .env file (this is the default)
             safe: false, // load .env.example (defaults to "false" which does not use dotenv-safe)
         }),
     ],
     devServer: {
         // contentBase: path.resolve(__dirname, './build'),
         hot: true,
+        host: typeof dotenv === undefined ? dotenv.parsed.CLIENT_HOST : process.env.CLIENT_HOST || "0.0.0.0",
+        port: typeof dotenv === undefined ? dotenv.parsed.CLIENT_PORT : process.env.CLIENT_PORT || 8080,
         open: true,
         headers: {
             "Access-Control-Allow-Origin": "*",

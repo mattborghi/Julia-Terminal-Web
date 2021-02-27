@@ -3,7 +3,7 @@ import { render } from 'react-dom';
 
 import Main from "./components/Main.jsx"
 
-import './main.css';
+import './styles/main.css';
 
 render(<Main />, document.getElementById('root'));
 

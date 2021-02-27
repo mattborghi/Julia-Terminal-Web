@@ -1,7 +1,11 @@
 import React, { useEffect, useRef } from 'react';
 
-let URL = 'http://' + process.env.HOST + ':' + process.env.PORT;
-console.log('Connecting to ' + URL)
+const server_host = process.env.SERVER_HOST || "127.0.0.1"
+const server_port = process.env.SERVER_PORT || 3000
+
+let URL = 'http://' + server_host + ':' + server_port;
+console.log('Connecting to terminal at: ' + URL)
+
 const socket = require('socket.io-client')(URL);
 
 import { Terminal } from "xterm";
@@ -18,9 +22,17 @@ const useStyles = makeStyles((theme) => ({
     },
 }))
 
-const term = new Terminal({});
+const term = new Terminal({
+    allowTransparency: true,
+    theme: {
+        background: "rgba(0, 0, 0, 0.3)",
+        // background: "rgba(36, 43, 56, 0.3)"
+    },
+});
+const fitAddon = new FitAddon();
+const linkAddon = new WebLinksAddon();
 
-function TerminalIDE({ terminalConsoleVisibility }) {
+function TerminalIDE({ terminalHeight, terminalConsoleVisibility }) {
     const classes = useStyles(terminalConsoleVisibility);
     const termRef = useRef(null);
 
@@ -29,10 +41,8 @@ function TerminalIDE({ terminalConsoleVisibility }) {
         const terminalContainer = document.getElementById('terminal');
 
         // plugins
-        const fitAddon = new FitAddon();
         term.loadAddon(fitAddon);
 
-        const linkAddon = new WebLinksAddon();
         term.loadAddon(linkAddon);
 
         term.open(terminalContainer);
@@ -45,6 +55,14 @@ function TerminalIDE({ terminalConsoleVisibility }) {
 
     }
 
+    // When height changes fit again the terminal
+    useEffect(() => {
+        if (termRef.current.style) {
+            termRef.current.style.height = "99.99%"
+        }
+        fitAddon.fit();
+    }, [terminalHeight])
+
     useEffect(() => {
         // You can call any method in XTerm.js by using 'xterm xtermRef.current.terminal.[What you want to call]
         // console.log(xtermRef.current.terminal)
@@ -53,20 +71,45 @@ function TerminalIDE({ terminalConsoleVisibility }) {
     }, [])
 
     useEffect(() => {
+        socket.on('disconnect', () => {
+            console.log('disconnected terminal connection');
+            term.clear();
+        })
+    }, [])
+
+    useEffect(() => {
         // when get the data from backend
         socket.on('output', ({ output }) => {
             term.write(output);
-        });
-        return () => {
-            socket.disconnect();
-        }
+        })
     }, []);
 
     useEffect(() => {
         term.onKey(function ({ key, domEvent }) {
-            socket.emit('write', { code: key })
+                socket.emit('write', { code: key })
         })
     }, [])
+
+    // const iscopy = e => { return e.key === 'c' && e.ctrlKey === true && e.shiftKey === false && e.altKey === false }
+    const ispaste = e => { return e.key === 'v' && e.ctrlKey === true && e.shiftKey === false && e.altKey === false }
+
+    const handleKeybinding = e => {
+        if (ispaste(e) && e.type == 'keyup') {
+            navigator.clipboard.readText().then(
+                clipText => socket.emit('write', { code: clipText }))
+            return false
+        }
+        // else if (iscopy(e) && e.type == 'keyup') {
+        //     console.log("handle copy")
+        //     return false
+        // }
+        return e
+    }
+
+    useEffect(() => {
+        term.attachCustomKeyEventHandler((e) => handleKeybinding(e))
+    }, [])
+
     return <div id="terminal" className={classes.terminal} ref={termRef} />
 }
 

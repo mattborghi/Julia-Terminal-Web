@@ -1,0 +1,9 @@
+services:
+  client:
+    build: client
+    ports:
+      - "8080:8080"
+  server:
+    build: server
+    ports: 
+      - "3000:3000"
