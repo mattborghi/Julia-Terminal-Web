@@ -16,7 +16,8 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between',
+        // justifyContent: 'space-between',
+        justifyContent: 'flex-end',
         backgroundColor: "rgb(36, 43, 56)",
         height: footerHeight => footerHeight,
         // Uncommenting this produces an interesting bug
@@ -33,8 +34,8 @@ const useStyles = makeStyles((theme) => ({
     },
     circle: {
         color: 'white',
-        position: "absolute",
-        left: "50%",
+        // position: "absolute",
+        // left: "50%",
     },
 }))
 

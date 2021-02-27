@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { makeStyles, withStyles } from '@material-ui/core/styles';
-import { Typography, Tab, Tabs } from "@material-ui/core";
+import { Tab, Tabs } from "@material-ui/core";
 
 const StyledTabs = withStyles({
     indicator: {
@@ -18,7 +18,7 @@ const StyledTabs = withStyles({
 const StyledTab = withStyles((theme) => ({
     root: {
         textTransform: 'none',
-        color: '#fff',
+        color: 'white',
         fontWeight: theme.typography.fontWeightRegular,
         fontSize: theme.typography.pxToRem(15),
         marginRight: theme.spacing(1),
@@ -30,12 +30,36 @@ const StyledTab = withStyles((theme) => ({
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        flexGrow: 0.4,
+        position: "absolute",
+        left: 0,
+        maxWidth: "80%"
     },
     padding: {
         padding: theme.spacing(1),
     },
 }));
+
+function a11yProps(index) {
+    return {
+        id: `scrollable-auto-tab-${index}`,
+        'aria-controls': `scrollable-auto-tabpanel-${index}`,
+    };
+}
+
+const Consoles = [
+    { "name": "Console 1" },
+    { "name": "Console 2" },
+    { "name": "Console 3" },
+    { "name": "Console 4" },
+    { "name": "Console 5" },
+    { "name": "Console 6" },
+    { "name": "Console 7" },
+    { "name": "Console 8" },
+    { "name": "Console 9" },
+    { "name": "Console 10" },
+    { "name": "Console 11" },
+    { "name": "Console 12" },
+]
 
 export default function TabsMenu({ terminalConsoleVisibility }) {
     const classes = useStyles();
@@ -46,12 +70,16 @@ export default function TabsMenu({ terminalConsoleVisibility }) {
     };
     return (
         <div className={classes.root}>
-            <StyledTabs value={value} onChange={handleChange} aria-label="styled tabs example">
-                <StyledTab label="Console 1" />
-                <StyledTab label="Console 2" />
-                <StyledTab label="Console 3" />
+            <StyledTabs
+                value={value}
+                onChange={handleChange}
+                variant="scrollable"
+                scrollButtons="auto"
+            >
+                {Consoles.map(({ name }, index) => {
+                    return <StyledTab label={name} key={index} {...a11yProps(index)} />
+                })}
             </StyledTabs>
-            <Typography className={classes.padding} />
         </div>
     )
 }

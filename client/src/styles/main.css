@@ -26,3 +26,8 @@
 .gutter-dragging:hover {
   background: grey;
 }
+
+/* Icon colors */
+.MuiSvgIcon-root {
+  color: white;
+}
