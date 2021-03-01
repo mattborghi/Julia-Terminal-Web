@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Main() {
     // Opened terminals
     // const [terminal, setTerminal] = useState()
-    const footerHeight = 40;
+    const footerHeight = 50;
     const termInitialSize = 10;
 
     const classes = useStyles();

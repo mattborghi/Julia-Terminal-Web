@@ -60,7 +60,8 @@ function TerminalIDE({ footerHeight, terminalHeight, terminalConsoleVisibility }
         if (termRef.current.style) {
             if (terminalConsoleVisibility) {
                 termRef.current.style.height = `calc(99% - ${footerHeight}px)`
-            } else {
+            }
+            else {
                 termRef.current.style.height = 0
             }
         }

@@ -25,6 +25,7 @@ const StyledTab = withStyles((theme) => ({
         '&:focus': {
             opacity: 1,
         },
+        fontFamily: theme.typography.fontFamily
     },
 }))((props) => <Tab disableRipple {...props} />);
 
@@ -46,28 +47,13 @@ function a11yProps(index) {
     };
 }
 
-const Consoles = [
-    { "name": "Console 1" },
-    { "name": "Console 2" },
-    { "name": "Console 3" },
-    { "name": "Console 4" },
-    { "name": "Console 5" },
-    { "name": "Console 6" },
-    { "name": "Console 7" },
-    { "name": "Console 8" },
-    { "name": "Console 9" },
-    { "name": "Console 10" },
-    { "name": "Console 11" },
-    { "name": "Console 12" },
-]
-
-export default function TabsMenu({ terminalConsoleVisibility }) {
+export default function TabsMenu({ consoles, value, setValue }) {
     const classes = useStyles();
-    const [value, setValue] = useState(0)
-
+    
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
+
     return (
         <div className={classes.root}>
             <StyledTabs
@@ -76,8 +62,8 @@ export default function TabsMenu({ terminalConsoleVisibility }) {
                 variant="scrollable"
                 scrollButtons="auto"
             >
-                {Consoles.map(({ name }, index) => {
-                    return <StyledTab label={name} key={index} {...a11yProps(index)} />
+                {consoles.map(id => {
+                    return <StyledTab label={`Console ${id}`} value={id} key={id} {...a11yProps(id)} />
                 })}
             </StyledTabs>
         </div>
