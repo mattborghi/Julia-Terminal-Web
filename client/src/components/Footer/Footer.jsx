@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React from "react"
 import { makeStyles } from '@material-ui/core/styles';
 import { IconButton, Tooltip } from "@material-ui/core";
 
@@ -11,6 +11,9 @@ import SettingsIcon from '@material-ui/icons/Settings';
 
 // Custom components
 import TabsMenu from "./Tabs.jsx"
+
+// utils
+import { findElement } from "./utils"
 
 const useStyles = makeStyles((theme) => ({
     footer: {
@@ -42,29 +45,10 @@ const useStyles = makeStyles((theme) => ({
     }
 }))
 
-// We dont need an efficient method, the number of terminals will be small
-function findElement(A) {
-    // only positive values, sorted
-    A = A.sort((a, b) => a - b)
+export default function Footer({ value, setValue, consoles, setConsoles,
+    footerHeight, terminalConsoleVisibility, setTerminalConsoleVisibility }) {
 
-    let x = 1
-
-    for (let i = 0; i < A.length; i++) {
-        // if we find a smaller number no need to continue, cause the array is sorted
-        if (x < A[i]) {
-            return x
-        }
-        x = A[i] + 1
-    }
-
-    return x
-}
-
-export default function Footer({ footerHeight, terminalConsoleVisibility, setTerminalConsoleVisibility }) {
     const classes = useStyles(footerHeight);
-    // Handle selected console in tab
-    const [value, setValue] = useState(1)
-    const [consoles, setConsoles] = useState([1]) // array of values
 
     const AddConsole = () => {
         const newconsole = findElement(consoles)
