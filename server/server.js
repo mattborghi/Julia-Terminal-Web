@@ -47,6 +47,11 @@ io.on('connection', (socket) => {
         term.write(code)
     })
 
+    // I have read that this is neccessary but I don't see any difference
+    socket.on('resize', ({ rows, cols }) => {
+        term.resize(cols, rows)
+    })
+
     socket.on('disconnecting', () => {
         console.log("disconnecting: ", socket.id)
         console.log(socket.rooms); // the Set contains at least the socket ID
