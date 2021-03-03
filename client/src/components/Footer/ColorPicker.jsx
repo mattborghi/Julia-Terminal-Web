@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles';
-import { SketchPicker } from 'react-color'
+// import { SketchPicker } from 'react-color'
 
 const useStyles = makeStyles((theme) => ({
     color: {
@@ -33,29 +33,31 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SketchExample({ color, setColor }) {
     const classes = useStyles({ color })
-    const [displayColorPicker, setDisplayColorPicker] = useState(false)
+    // const [displayColorPicker, setDisplayColorPicker] = useState(false)
 
     const handleClick = () => {
         setDisplayColorPicker(prevState => !prevState)
     };
 
-    const handleClose = () => {
-        setDisplayColorPicker(false)
-    };
+    // const handleClose = () => {
+    //     setDisplayColorPicker(false)
+    // };
 
-    const handleChange = (color) => {
-        setColor(color.hex)
-    };
+    // const handleChange = (color) => {
+    //     setColor(color.hex)
+    // };
 
     return (
         <div>
-            <div className={classes.swatch} onClick={handleClick}>
+            <div className={classes.swatch}>
                 <div className={classes.color} />
             </div>
-            { displayColorPicker ? <div className={classes.popover}>
-                <div className={classes.cover} onClick={handleClose} />
-                <SketchPicker color={color} onChange={handleChange} />
-            </div> : null}
+            {/* { displayColorPicker ?
+                <div className={classes.popover}>
+                    <div className={classes.cover} onClick={handleClose} />
+                    <SketchPicker color={color} onChange={handleChange} />
+                </div>
+                : null} */}
 
         </div>
     )
