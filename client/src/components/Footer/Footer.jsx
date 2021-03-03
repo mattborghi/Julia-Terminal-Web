@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import { makeStyles } from '@material-ui/core/styles';
 import { IconButton, Tooltip } from "@material-ui/core";
 
@@ -9,6 +9,7 @@ import SettingsIcon from '@material-ui/icons/Settings';
 
 // Custom components
 import TabsMenu from "./Tabs.jsx"
+import DraggableDialog from "./Settings.jsx"
 
 // utils
 import { findElement } from "./utils"
@@ -45,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 export default function Footer({ value, setValue, consoles, setConsoles, footerHeight }) {
-
+    const [openSettings, setOpenSettings] = useState(false)
     const classes = useStyles(footerHeight);
 
     const AddConsole = () => {
@@ -91,10 +92,12 @@ export default function Footer({ value, setValue, consoles, setConsoles, footerH
             </Tooltip>
             {/* Settings */}
             <Tooltip title="Settings">
-                <IconButton size="medium">
+                <IconButton size="medium" onClick={() => setOpenSettings(true)}>
                     <SettingsIcon fontSize="inherit" />
                 </IconButton>
             </Tooltip>
+            {/* Settings Window */}
+            <DraggableDialog open={openSettings} setOpen={setOpenSettings} />
         </div>
     )
 }

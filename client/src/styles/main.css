@@ -27,3 +27,18 @@
 .MuiSvgIcon-root {
   color: white;
 }
+
+/* Dialog scrollbar settings */
+.MuiDialogContent-root::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Draggable scrolling element */
+.MuiDialogContent-root::-webkit-scrollbar-thumb {
+  background: rgba(80,80,80,0.7);
+  outline: 1px solid grey;
+}
+
+.MuiDialogContent-root::-webkit-scrollbar-thumb:hover {
+  background: rgba(80,80,80,0.9);
+}
