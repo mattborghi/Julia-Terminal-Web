@@ -26,6 +26,7 @@ function TerminalIDE({ id, footerHeight, terminalHeight, terminalConsoleVisibili
     const classes = useStyles(terminalConsoleVisibility);
     const termRef = useRef(null);
     const [fitAddon, setFitAddon] = useState(null)
+    const [hidden, setHidden] = useState(false)
 
     const openInitTerminal = (key) => {
         const socket = require('socket.io-client')(URL);
@@ -60,14 +61,13 @@ function TerminalIDE({ id, footerHeight, terminalHeight, terminalConsoleVisibili
             socket.emit('write', { code: key })
         })
 
-        term.onResize(function ({ rows, cols }) {
-            socket.emit('resize', { rows, cols })
-        })
+        // term.onResize(function ({ rows, cols }) {
+        //     socket.emit('resize', { rows, cols })
+        // })
 
         term.attachCustomKeyEventHandler((e) => handleKeybinding(e, socket))
 
         socket.on('disconnect', () => {
-            console.log('disconnected terminal connection');
             term.clear();
         })
 
@@ -77,9 +77,14 @@ function TerminalIDE({ id, footerHeight, terminalHeight, terminalConsoleVisibili
 
     }
 
+    useEffect(() => {
+        // console.log(termRef.current.parentElement.hidden)
+        setHidden(termRef.current.parentElement.hidden)
+    })
+
     // When height changes fit again the terminal
     useEffect(() => {
-        if (termRef.current.style && fitAddon) {
+        if (fitAddon && !hidden) {
             if (terminalConsoleVisibility) {
                 termRef.current.style.height = `calc(99% - ${footerHeight}px)`
                 fitAddon.fit();
@@ -89,7 +94,7 @@ function TerminalIDE({ id, footerHeight, terminalHeight, terminalConsoleVisibili
             // }
         }
     }, [terminalHeight])
-    // Fixes bug when clicking on show/hide pane
+    // // Fixes bug when clicking on show/hide pane
     useEffect(() => {
         if (termRef.current.style && fitAddon) {
             if (terminalConsoleVisibility) {
