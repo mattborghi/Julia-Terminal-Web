@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { SketchPicker } from 'react-color';
+import ColorPicker from "./ColorPicker.jsx"
 import { makeStyles } from '@material-ui/core/styles';
 import {
     Dialog,
@@ -29,7 +31,7 @@ function PaperComponent(props) {
 const useStyles = makeStyles((theme) => ({
     appBar: {
         position: 'relative',
-        backgroundColor: "rgb(36, 43, 56)",
+        backgroundColor: ({ background }) => background,
         cursor: "move",
     },
     title: {
@@ -42,7 +44,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function DraggableDialog({ open, setOpen }) {
-    const classes = useStyles();
+    const [background, setBackground] = useState("#242b38")
+    const classes = useStyles({ background });
     const handleClose = () => {
         setOpen(false);
     };
@@ -68,14 +71,12 @@ export default function DraggableDialog({ open, setOpen }) {
                 </Toolbar>
             </AppBar>
             <DialogContent>
-                {/* <DialogContentText>
-                    Change the terminal settings.
-                </DialogContentText> */}
 
                 {/* write content  */}
                 <List>
                     <ListItem button>
-                        <ListItemText primary="Phone ringtone" secondary="Titania" />
+                        <ListItemText primary="Background Color" secondary={background} />
+                        <ColorPicker color={background} setColor={setBackground} />
                     </ListItem>
                     <Divider />
                     <ListItem button>
