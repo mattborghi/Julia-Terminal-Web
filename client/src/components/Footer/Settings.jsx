@@ -11,7 +11,8 @@ import {
     ListItem,
     List,
     ListItemText,
-    Divider
+    Divider,
+    IconButton
 } from '@material-ui/core';
 import Draggable from 'react-draggable';
 import CloseIcon from '@material-ui/icons/Close';
