@@ -16,14 +16,14 @@ import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
     terminal: {
-        // visibility: terminalConsoleVisibility => terminalConsoleVisibility ? "visible" : "hidden",
+        height: '100%'
     },
 }))
 
 
-function TerminalIDE({ id, footerHeight, terminalHeight, terminalConsoleVisibility
+function TerminalIDE({ id, footerHeight, terminalHeight,
 }) {
-    const classes = useStyles(terminalConsoleVisibility);
+    const classes = useStyles();
     const termRef = useRef(null);
     const [fitAddon, setFitAddon] = useState(null)
     const [hidden, setHidden] = useState(false)
@@ -52,6 +52,7 @@ function TerminalIDE({ id, footerHeight, terminalHeight, terminalConsoleVisibili
         term.open(terminalContainer);
 
         term.element.style.padding = '10px';
+
         // fit windows
         fitAddon.fit();
         // focus
@@ -85,29 +86,14 @@ function TerminalIDE({ id, footerHeight, terminalHeight, terminalConsoleVisibili
     // When height changes fit again the terminal
     useEffect(() => {
         if (fitAddon && !hidden) {
-            if (terminalConsoleVisibility) {
-                termRef.current.style.height = `calc(99% - ${footerHeight}px)`
-                fitAddon.fit();
-            }
-            // else {
-            //     termRef.current.style.height = 0
-            // }
+            termRef.current.style.height = `calc(99% - ${footerHeight}px)`
+            fitAddon.fit();
         }
     }, [terminalHeight])
-    // // Fixes bug when clicking on show/hide pane
-    useEffect(() => {
-        if (termRef.current.style && fitAddon) {
-            if (terminalConsoleVisibility) {
-                termRef.current.style.height = `calc(99% - ${footerHeight}px)`
-                fitAddon.fit();
-            }
-        }
-    }, [terminalConsoleVisibility])
 
     useEffect(() => {
         // check if element is visible, because `terminal.open(this)` will fail otherwise
         // https://github.com/JunoLab/atom-ink/blob/87378d40a74cd83790d47971548b8d161095d805/lib/console/view.js#L13
-        // if (!terminalConsoleVisibility) 
         openInitTerminal(id)
         // term.write('\x1b[1m\x1b[32mPress Enter to start Julia. \x1b[0m\n\r')
     }, [])

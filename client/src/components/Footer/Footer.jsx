@@ -3,8 +3,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import { IconButton, Tooltip } from "@material-ui/core";
 
 // Icons
-import ExpandLessIcon from '@material-ui/icons/ExpandLess';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import AddIcon from '@material-ui/icons/Add';
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import SettingsIcon from '@material-ui/icons/Settings';
@@ -25,6 +23,7 @@ const useStyles = makeStyles((theme) => ({
         justifyContent: 'flex-end',
         backgroundColor: "rgb(36, 43, 56)",
         height: footerHeight => footerHeight,
+        marginRight: 10,
         // Uncommenting this produces an interesting bug
         // borderTop: "3px solid grey",
     },
@@ -45,8 +44,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }))
 
-export default function Footer({ value, setValue, consoles, setConsoles,
-    footerHeight, terminalConsoleVisibility, setTerminalConsoleVisibility }) {
+export default function Footer({ value, setValue, consoles, setConsoles, footerHeight }) {
 
     const classes = useStyles(footerHeight);
 
@@ -95,14 +93,6 @@ export default function Footer({ value, setValue, consoles, setConsoles,
             <Tooltip title="Settings">
                 <IconButton size="medium">
                     <SettingsIcon fontSize="inherit" />
-                </IconButton>
-            </Tooltip>
-            {/* Console visibility button */}
-            <Tooltip title="Shrink/Expand Panel">
-                <IconButton onClick={() => setTerminalConsoleVisibility(prevState => !prevState)} size="medium">
-                    {terminalConsoleVisibility ?
-                        <ExpandMoreIcon fontSize="inherit" /> :
-                        <ExpandLessIcon fontSize="inherit" />}
                 </IconButton>
             </Tooltip>
         </div>
