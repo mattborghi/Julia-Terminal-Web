@@ -72,7 +72,7 @@
 
 /* Scrollbar Settings */
 .xterm-viewport::-webkit-scrollbar {
-  background-color: black;
+  /* background-color: black; */
   width: 20px;
 }
 
@@ -94,26 +94,26 @@
 } */
 
 /* Arrow Buttons */
-.xterm-viewport::-webkit-scrollbar-button:single-button {
+/* .xterm-viewport::-webkit-scrollbar-button:single-button {
   border-style: solid;
-}
+} */
 /* Up */
-.xterm-viewport::-webkit-scrollbar-button:single-button:vertical {
+/* .xterm-viewport::-webkit-scrollbar-button:single-button:vertical {
   background:
         linear-gradient(120deg, black 40%, rgba(0, 0, 0, 0) 41%),
         linear-gradient(240deg, black 40%, rgba(0, 0, 0, 0) 41%),
         linear-gradient(0deg, black 30%, rgba(0, 0, 0, 0) 31%);
     background-color: white;
-}
+} */
 
 /* Down */
-::-webkit-scrollbar-button:vertical:end:increment {
+/* ::-webkit-scrollbar-button:vertical:end:increment {
   background:
       linear-gradient(300deg, black 40%, rgba(0, 0, 0, 0) 41%),
       linear-gradient(60deg, black 40%, rgba(0, 0, 0, 0) 41%),
       linear-gradient(180deg, black 30%, rgba(0, 0, 0, 0) 31%);
   background-color: white;
-}
+} */
  
 .xterm .xterm-screen {
   position: relative;

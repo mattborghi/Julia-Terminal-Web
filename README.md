@@ -39,8 +39,10 @@ docker run -it -p 3000:3000 server
 ### Compose
 
 ```sh
-docker-compose up
+docker-compose up --build
 ```
+
+Open the project at `http://localhost:8080/`.
 
 ## Preview video
 
