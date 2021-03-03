@@ -18,6 +18,11 @@ const useStyles = makeStyles((theme) => ({
         justifyContent: "space-between",
         backgroundColor: "rgb(36, 43, 56)",
     },
+    split: {
+        display: "flex",
+        flexDirection: "column",
+        height: "100%",
+    },
 }))
 
 export default function Main() {
@@ -58,9 +63,9 @@ export default function Main() {
     return (
         <div className={classes.main}>
             <Split
-                className="split-vertical"
+                className={classes.split}
                 direction="vertical"
-                gutterSize={3}
+                gutterSize={1}
                 minSize={footerHeight}
                 sizes={[1.0 - (terminalHeight / 100), terminalHeight / 100]}
                 onSetSizes={(sizes) => {

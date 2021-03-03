@@ -4,27 +4,23 @@
     margin: 0;
   }
 
-/* split.css */
-.split-vertical {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
+
+/* gutter from react-split-it */
 
 .gutter {
   flex-shrink: 0;
   flex-grow: 0;
-  background: transparent;
+  background: rgba(0,0,0,1.0); /* change to terminal background color */
 }
 
 .gutter-vertical {
   cursor: row-resize;
 }
 .gutter:hover {
-  background: grey;
+  background: black; /* change to terminal background color */
 }
 .gutter-dragging:hover {
-  background: grey;
+  background: black; /* change to terminal background color */
 }
 
 /* Icon colors */
