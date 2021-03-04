@@ -54,7 +54,6 @@ io.on('connection', (socket) => {
 
     socket.on('disconnecting', () => {
         console.log("disconnecting: ", socket.id)
-        console.log(socket.rooms); // the Set contains at least the socket ID
     });
 
     socket.on('disconnect', () => {

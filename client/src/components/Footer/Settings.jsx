@@ -10,7 +10,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import CloseIcon from '@material-ui/icons/Close';
 
-import { ThemeContext } from "../Theme.jsx"
+import { ThemeContext, JuliaThemeContext, FontContext, JULIA_THEMES, FONT_FAMILY } from "../Theme.jsx"
 
 import {
     Dialog,
@@ -70,23 +70,12 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const JULIA_THEMES = ["JuliaDefault",
-    "Monokai16",
-    "Monokai256",
-    "Monokai24bit",
-    "BoxyMonokai256",
-    "TomorrowNightBright",
-    "TomorrowNightBright24bit",
-    "OneDark",
-    "Base16MaterialDarker"]
-
-const FONT_FAMILY = ["Verdana", "Arial"]
-
 export default function DraggableDialog({ open, setOpen }) {
     const { background, setBackground } = useContext(ThemeContext);
-    const [theme, setTheme] = useState(JULIA_THEMES[0])
-    const [fontFamily, setFontFamily] = useState(FONT_FAMILY[0])
-    const [fontSize, setFontSize] = useState(12)
+    const { theme, setTheme } = useContext(JuliaThemeContext);
+    // const [fontFamily, setFontFamily] = useState(FONT_FAMILY[0])
+    // const [fontSize, setFontSize] = useState(12)
+    const { fontFamily, fontSize, setFontFamily, setFontSize } = useContext(FontContext)
     const classes = useStyles({ background });
 
     const handleClose = () => {
