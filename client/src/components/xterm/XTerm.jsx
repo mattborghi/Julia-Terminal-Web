@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 
 const server_host = process.env.SERVER_HOST || "127.0.0.1"
 const server_port = process.env.SERVER_PORT || 3000
@@ -14,30 +14,40 @@ import './xterm.css';
 
 import { makeStyles } from '@material-ui/core/styles';
 
+import { ThemeContext, JuliaThemeContext, FontContext } from "../Theme.jsx"
+import { hexToRgb } from "../Footer/utils.js";
+
 const useStyles = makeStyles((theme) => ({
     terminal: {
-        height: '100%'
+        height: '100%',
     },
 }))
 
 
 function TerminalIDE({ id, footerHeight, terminalHeight,
 }) {
-    const classes = useStyles();
     const termRef = useRef(null);
+    const [socket, setSocket] = useState(null)
+    const [term, setTerm] = useState(null)
     const [fitAddon, setFitAddon] = useState(null)
     const [hidden, setHidden] = useState(false)
 
+    const { background } = useContext(ThemeContext)
+    const { theme } = useContext(JuliaThemeContext)
+    const { fontFamily, fontSize } = useContext(FontContext)
+
+    const classes = useStyles();
+
     const openInitTerminal = (key) => {
         const socket = require('socket.io-client')(URL);
-
+        setSocket(socket)
         const term = new Terminal({
             allowTransparency: true,
             theme: {
-                background: "rgba(0, 0, 0, 0.3)",
-                // background: "rgba(36, 43, 56, 0.3)"
+                background,
             },
         });
+        setTerm(term)
         const fitAddon = new FitAddon()
         setFitAddon(fitAddon)
         const linkAddon = new WebLinksAddon();
@@ -62,10 +72,6 @@ function TerminalIDE({ id, footerHeight, terminalHeight,
             socket.emit('write', { code: key })
         })
 
-        // term.onResize(function ({ rows, cols }) {
-        //     socket.emit('resize', { rows, cols })
-        // })
-
         term.attachCustomKeyEventHandler((e) => handleKeybinding(e, socket))
 
         socket.on('disconnect', () => {
@@ -75,17 +81,39 @@ function TerminalIDE({ id, footerHeight, terminalHeight,
         socket.on('output', ({ output }) => {
             term.write(output);
         })
-
     }
 
     useEffect(() => {
-        // console.log(termRef.current.parentElement.hidden)
+        if (term) {
+            term.setOption('fontFamily', fontFamily)
+            fitAddon.fit()
+        }
+    }, [fontFamily])
+
+    useEffect(() => {
+        if (term) {
+            term.setOption('fontSize', fontSize)
+            fitAddon.fit()
+        }
+    }, [fontSize])
+
+    useEffect(() => {
+        if (socket) socket.emit('write', { code: `@info "Changed color scheme"; colorscheme!("${theme}")\n` })
+    }, [theme])
+
+    useEffect(() => {
+        if (term) term.setOption('theme', {
+            background: `rgba(${hexToRgb(background)}, 0.3)`,
+        })
+    }, [background])
+
+    useEffect(() => {
         setHidden(termRef.current.parentElement.hidden)
     })
 
     // When height changes fit again the terminal
     useEffect(() => {
-        if (fitAddon && !hidden) {
+        if (fitAddon && !hidden && term) {
             termRef.current.style.height = `calc(99% - ${footerHeight}px)`
             fitAddon.fit();
         }
