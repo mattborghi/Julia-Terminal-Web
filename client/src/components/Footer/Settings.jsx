@@ -1,31 +1,31 @@
 import React, { useState } from 'react';
+
+import Draggable from 'react-draggable';
 import { SketchPicker } from 'react-color';
+
 import ColorPicker from "./ColorPicker.jsx"
 import { hexToRgb } from "./utils.js";
+
 import { makeStyles } from '@material-ui/core/styles';
+
+import CloseIcon from '@material-ui/icons/Close';
+
 import {
     Dialog,
-    DialogActions,
     DialogContent,
     Paper,
     AppBar,
     Toolbar,
     Typography,
-    ListItem,
-    List,
     TextField,
     ListItemText,
     Select,
     Divider,
-    IconButton
+    IconButton,
+    Accordion,
+    AccordionSummary,
+    AccordionDetails
 } from '@material-ui/core';
-import Accordion from '@material-ui/core/Accordion';
-import AccordionSummary from '@material-ui/core/AccordionSummary';
-import AccordionDetails from '@material-ui/core/AccordionDetails';
-
-import Draggable from 'react-draggable';
-import CloseIcon from '@material-ui/icons/Close';
-
 
 function PaperComponent(props) {
     return (
@@ -54,6 +54,7 @@ const useStyles = makeStyles((theme) => ({
     },
     content: {
         maxWidth: '100%',
+        padding: 20,
         backgroundColor: ({ background }) => {
             const rgb = hexToRgb(background)
             return `rgba(${rgb},0.5)`
@@ -114,7 +115,7 @@ export default function DraggableDialog({ open, setOpen }) {
                 {/* background */}
                 <Accordion>
                     <AccordionSummary
-                        expandIcon={<ColorPicker color={background} setColor={setBackground} />}
+                        expandIcon={<ColorPicker color={background} />}
                         aria-controls="panel1a-content"
                         id="panel1a-header"
                     >
