@@ -38,6 +38,8 @@ docker run -it -p 3000:3000 server
 
 ### Compose
 
+Instead, we can run both docker with one command using `docker compose` as follows.
+
 ```sh
 docker-compose up --build
 ```
