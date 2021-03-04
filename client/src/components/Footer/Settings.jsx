@@ -91,6 +91,42 @@ export default function DraggableDialog({ open, setOpen }) {
         setOpen(false);
     };
 
+    const SETTINGS = [
+        {
+            title: "Background Color",
+            variable: background,
+            expandIcon: <ColorPicker color={background} />,
+            summary: <SketchPicker color={background} onChangeComplete={(color) => setBackground(color.hex)} />,
+        },
+        {
+            title: "Julia Theme",
+            variable: theme,
+            expandIcon: null,
+            summary: <Select native value={theme} onChange={e => setTheme(e.target.value)} >
+                {JULIA_THEMES.map(theme => {
+                    return <option key={theme} value={theme}>{theme}</option>
+                })}
+            </Select>,
+        },
+        {
+            title: "Font Family",
+            variable: fontFamily,
+            expandIcon: null,
+            summary: <Select native value={fontFamily} onChange={e => setFontFamily(e.target.value)} >
+                {FONT_FAMILY.map(font => {
+                    return <option key={font} value={font}>{font}</option>
+                })}
+            </Select>
+        },
+        {
+            title: "Font Size",
+            variable: fontSize,
+            expandIcon: null,
+            summary: <TextField id="standard-basic" defaultValue={fontSize} autoComplete="off"
+                inputProps={{ type: 'number' }} onChange={e => setFontSize(e.target.value)} />
+        },
+    ]
+
     return (
         <Dialog
             className={classes.dialog}
@@ -112,79 +148,21 @@ export default function DraggableDialog({ open, setOpen }) {
                 </Toolbar>
             </AppBar>
             <DialogContent className={classes.content}>
-                {/* background */}
-                <Accordion>
-                    <AccordionSummary
-                        expandIcon={<ColorPicker color={background} />}
-                        aria-controls="panel1a-content"
-                        id="panel1a-header"
-                    >
-                        <ListItemText primary="Background Color" secondary={background} />
-                    </AccordionSummary>
-                    <Divider />
-                    <AccordionDetails className={classes.details}>
-                        <SketchPicker
-                            color={background}
-                            onChangeComplete={(color) => setBackground(color.hex)}
-                        />
-                    </AccordionDetails>
-                </Accordion>
-                {/* Julia theme */}
-                <Accordion>
-                    <AccordionSummary
-                        aria-controls="panel2a-content"
-                        id="panel2a-header"
-                    >
-                        <ListItemText primary="Julia Theme" secondary={theme} />
-                    </AccordionSummary>
-                    <Divider />
-                    <AccordionDetails className={classes.details}>
-                        <Select
-                            native
-                            value={theme}
-                            onChange={e => setTheme(e.target.value)}
-                        >
-                            {JULIA_THEMES.map(theme => {
-                                return <option key={theme} value={theme}>{theme}</option>
-                            })}
-                        </Select>
-                    </AccordionDetails>
-                </Accordion>
-                {/* Font family */}
-                <Accordion>
-                    <AccordionSummary
-                        aria-controls="panel3a-content"
-                        id="panel3a-header"
-                    >
-                        <ListItemText primary="Font familiy" secondary={fontFamily} />
-                    </AccordionSummary>
-                    <Divider />
-                    <AccordionDetails className={classes.details}>
-                        <Select
-                            native
-                            value={fontFamily}
-                            onChange={e => setFontFamily(e.target.value)}
-                        >
-                            {FONT_FAMILY.map(font => {
-                                return <option key={font} value={font}>{font}</option>
-                            })}
-                        </Select>
-                    </AccordionDetails>
-                </Accordion>
-                {/* Font size */}
-                <Accordion>
-                    <AccordionSummary
-                        aria-controls="panel4a-content"
-                        id="panel4a-header"
-                    >
-                        <ListItemText primary="Font Size" secondary={fontSize} />
-                    </AccordionSummary>
-                    <Divider />
-                    <AccordionDetails className={classes.details}>
-                        <TextField id="standard-basic" defaultValue={fontSize} autoComplete="off" inputProps={{ type: 'number' }} onChange={e => setFontSize(e.target.value)} />
-                    </AccordionDetails>
-                </Accordion>
-
+                {SETTINGS.map(item => {
+                    return (
+                        <Accordion key={item.title}>
+                            <AccordionSummary
+                                expandIcon={item.expandIcon}
+                            >
+                                <ListItemText primary={item.title} secondary={item.variable} />
+                            </AccordionSummary>
+                            <Divider />
+                            <AccordionDetails className={classes.details}>
+                                {item.summary}
+                            </AccordionDetails>
+                        </Accordion>
+                    )
+                })}
             </DialogContent>
         </Dialog>
     );
