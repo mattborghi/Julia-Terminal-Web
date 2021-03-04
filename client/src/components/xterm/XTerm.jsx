@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 
 const server_host = process.env.SERVER_HOST || "127.0.0.1"
 const server_port = process.env.SERVER_PORT || 3000
@@ -14,6 +14,9 @@ import './xterm.css';
 
 import { makeStyles } from '@material-ui/core/styles';
 
+import { ThemeContext } from "../Theme.jsx"
+import { hexToRgb } from "../Footer/utils.js";
+
 const useStyles = makeStyles((theme) => ({
     terminal: {
         height: '100%'
@@ -25,19 +28,21 @@ function TerminalIDE({ id, footerHeight, terminalHeight,
 }) {
     const classes = useStyles();
     const termRef = useRef(null);
+    const [term, setTerm] = useState(null)
     const [fitAddon, setFitAddon] = useState(null)
     const [hidden, setHidden] = useState(false)
 
+    const { background } = useContext(ThemeContext)
+
     const openInitTerminal = (key) => {
         const socket = require('socket.io-client')(URL);
-
         const term = new Terminal({
             allowTransparency: true,
             theme: {
-                background: "rgba(0, 0, 0, 0.3)",
-                // background: "rgba(36, 43, 56, 0.3)"
+                background,
             },
         });
+        setTerm(term)
         const fitAddon = new FitAddon()
         setFitAddon(fitAddon)
         const linkAddon = new WebLinksAddon();
@@ -79,7 +84,12 @@ function TerminalIDE({ id, footerHeight, terminalHeight,
     }
 
     useEffect(() => {
-        // console.log(termRef.current.parentElement.hidden)
+        if (term) term.setOption('theme', {
+            background: `rgba(${hexToRgb(background)}, 0.3)`,
+        })
+    }, [background])
+
+    useEffect(() => {
         setHidden(termRef.current.parentElement.hidden)
     })
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 
 import Draggable from 'react-draggable';
 import { SketchPicker } from 'react-color';
@@ -9,6 +9,8 @@ import { hexToRgb } from "./utils.js";
 import { makeStyles } from '@material-ui/core/styles';
 
 import CloseIcon from '@material-ui/icons/Close';
+
+import { ThemeContext } from "../Theme.jsx"
 
 import {
     Dialog,
@@ -81,7 +83,7 @@ const JULIA_THEMES = ["JuliaDefault",
 const FONT_FAMILY = ["Verdana", "Arial"]
 
 export default function DraggableDialog({ open, setOpen }) {
-    const [background, setBackground] = useState("#242b38")
+    const { background, setBackground } = useContext(ThemeContext);
     const [theme, setTheme] = useState(JULIA_THEMES[0])
     const [fontFamily, setFontFamily] = useState(FONT_FAMILY[0])
     const [fontSize, setFontSize] = useState(12)
