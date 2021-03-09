@@ -6,6 +6,7 @@ import Split from 'react-split-it';
 import Terminal from './xterm/XTerm.jsx';
 import Footer from "./Footer/Footer.jsx";
 import TabPanel from "./Footer/TabPanel.jsx"
+import GitHub from "./GitHub/Github.jsx";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -76,6 +77,8 @@ export default function Main() {
                     })}
                 </div>
             </Split>
+
+            <GitHub />
         </div>
     )
 }
