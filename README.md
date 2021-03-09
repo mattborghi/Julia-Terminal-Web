@@ -48,7 +48,7 @@ Open the project at `http://localhost:8080/`.
 
 ## Preview video
 
-[![Video Preview](./assets/imag/terminal.png)](https://youtu.be/LVt18SACLuU)
+[![Video Preview](./assets/imag/terminal.png)](https://youtu.be/6E5Deijb9vk)
 
 ## Resources
 
