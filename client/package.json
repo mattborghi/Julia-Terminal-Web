@@ -11,7 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@material-ui/core": "^4.11.3",
+    "@material-ui/core": "^4.11.4",
     "@material-ui/icons": "^4.11.2",
     "dotenv-webpack": "^7.0.2",
     "react": "^17.0.2",
@@ -25,16 +25,16 @@
     "xterm-addon-web-links": "^0.4.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.13.14",
-    "@babel/preset-env": "^7.13.12",
+    "@babel/core": "^7.14.0",
+    "@babel/preset-env": "^7.14.1",
     "@babel/preset-react": "^7.13.13",
     "babel-loader": "^8.2.2",
-    "css-loader": "^5.2.0",
+    "css-loader": "^5.2.4",
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.3.1",
     "react-hot-loader": "^4.13.0",
     "style-loader": "^2.0.0",
-    "webpack": "^5.30.0",
+    "webpack": "^5.36.2",
     "webpack-cli": "^4.6.0",
     "webpack-dev-server": "^3.11.2"
   }
